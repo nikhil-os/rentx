@@ -25,10 +25,6 @@ mongoose.connect(process.env.MONGO_URI)
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
-app.use('/api/otp', (req, res, next) => {
-  console.log('OTP route hit:', req.method, req.originalUrl, req.body);
-  next();
-}, require('./routes/otp'));
 
 app.get('/', (req, res) => {
   res.send('RentX API Running 🚀');
