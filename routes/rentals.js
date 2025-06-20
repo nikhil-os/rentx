@@ -9,7 +9,8 @@ const auth = require('../middleware/auth');
 
 // Create rental post (protected)
 router.post('/', auth, async (req, res) => {
-  const { title, description, price, image, location } = req.body;
+  console.log('POST /rentals req.body:', req.body); // Debug: log incoming data
+  const { title, description, price, image, location, category } = req.body;
 
   try {
     const newRental = new Rental({
@@ -18,6 +19,7 @@ router.post('/', auth, async (req, res) => {
       price,
       image,
       location,
+      category, // <-- ensure category is saved
       user: req.userId, // Comes from auth middleware
     });
 

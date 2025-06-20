@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>OTP Test</h2>
+        
+        <div class="form-group">
+            <label for="phone">Phone Number (10 digits):</label>
+            <input type="tel" id="phone" maxlength="10" placeholder="Enter 10 digit phone number">
+        </div>
+        
+        <button id="sendOtp">Send OTP</button>
+        
+        <div id="otpSection" style="display: none; margin-top: 20px;">
+            <div class="form-group">
+                <label for="otp">Enter OTP:</label>
+                <input type="text" id="otp" maxlength="6" placeholder="Enter 6 digit OTP">
+            </div>
+            <button id="verifyOtp">Verify OTP</button>
+        </div>
+        
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('sendOtp').addEventListener('click', async () => {
+            const phone = document.getElementById('phone').value;
+            if (!phone || phone.length !== 10) {
+                showResult('Please enter a valid 10-digit phone number', 'error');
+                return;
+            }
+            
+            try {
+                showResult('Sending OTP...', 'info');
+                const response = await fetch('http://localhost:5000/api/otp/send-otp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ phone })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('otpSection').style.display = 'block';
+                    showResult('OTP sent successfully!', 'success');
+                } else {
+                    showResult(`Failed to send OTP: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showResult(`Error: ${error.message}`, 'error');
+            }
+        });
+        
+        document.getElementById('verifyOtp').addEventListener('click', async () => {
+            const phone = document.getElementById('phone').value;
+            const code = document.getElementById('otp').value;
+            
+            if (!code || code.length !== 6) {
+                showResult('Please enter a valid 6-digit OTP', 'error');
+                return;
+            }
+            
+            try {
+                showResult('Verifying OTP...', 'info');
+                const response = await fetch('http://localhost:5000/api/otp/verify-otp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ phone, code })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    showResult('OTP verified successfully!', 'success');
+                } else {
+                    showResult(`Failed to verify OTP: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showResult(`Error: ${error.message}`, 'error');
+            }
+        });
+        
+        function showResult(message, type) {
+            const resultElement = document.getElementById('result');
+            resultElement.textContent = message;
+            resultElement.style.display = 'block';
+            
+            // Set color based on message type
+            if (type === 'error') {
+                resultElement.style.backgroundColor = '#ffebee';
+                resultElement.style.color = '#c62828';
+            } else if (type === 'success') {
+                resultElement.style.backgroundColor = '#e8f5e9';
+                resultElement.style.color = '#2e7d32';
+            } else {
+                resultElement.style.backgroundColor = '#e3f2fd';
+                resultElement.style.color = '#1565c0';
+            }
+        }
+
+        // Test the API endpoint
+        fetch('http://localhost:5000/api/otp/test')
+            .then(response => response.json())
+            .then(data => {
+                console.log('API Test Result:', data);
+                if (data.twilioConfigured) {
+                    console.log('Twilio is properly configured');
+                } else {
+                    console.warn('Twilio is not properly configured');
+                }
+            })
+            .catch(error => {
+                console.error('API Test Error:', error);
+            });
+    </script>
+</body>
+</html> 
