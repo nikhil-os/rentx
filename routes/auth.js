@@ -1,10 +1,16 @@
-const auth = require('../middleware/auth');
+require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') });
+
+
 
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const auth = require('../middleware/auth');
+
+console.log('[auth.js] JWT_SECRET =', process.env.JWT_SECRET);
+
 
 router.post('/register', async (req, res) => {
   const { name, email, password } = req.body;
@@ -62,32 +68,69 @@ router.post('/signup', async (req, res) => {
 
 // LOGIN Route
 router.post('/login', async (req, res) => {
+  console.log('Login attempt:', req.body);
   const { email, password } = req.body;
+
+  if (!email || !password) {
+    console.log('Missing email or password');
+    return res.status(400).json({ message: 'Email and password are required' });
+  }
 
   try {
     // Check if user exists
+    console.log('Finding user with email:', email);
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+    if (!user) {
+      console.log('User not found');
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
+    console.log('User found:', user._id);
 
     // Compare password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+    console.log('Comparing passwords');
+    try {
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        console.log('Password mismatch');
+        return res.status(400).json({ message: 'Invalid credentials' });
+      }
+      console.log('Password matched');
+    } catch (bcryptError) {
+      console.error('bcrypt error:', bcryptError);
+      return res.status(500).json({ message: 'Error verifying password' });
+    }
 
     // Sign JWT
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '7d'
-    });
+    const jwtSecret = process.env.JWT_SECRET;
+    console.log("JWT Secret length:", jwtSecret ? jwtSecret.length : 0);
+    
+    if (!jwtSecret) {
+      console.error('JWT_SECRET is undefined');
+      return res.status(500).json({ message: 'Server configuration error' });
+    }
+    
+    try {
+      const payload = { id: user._id.toString() };
+      console.log('Signing JWT with payload:', payload);
+      
+      const token = jwt.sign(payload, jwtSecret, { expiresIn: '7d' });
+      console.log('Token generated successfully');
 
-    res.json({
-      token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email
-      }
-    });
+      // Return user data and token
+      return res.json({
+        token,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email
+        }
+      });
+    } catch (jwtError) {
+      console.error('JWT signing error:', jwtError);
+      return res.status(500).json({ message: 'Error generating authentication token' });
+    }
   } catch (err) {
-    console.error(err);
+    console.error('Login error:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });
