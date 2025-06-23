@@ -18,6 +18,12 @@ const userSchema = new mongoose.Schema({
       return !this.googleId; // Password is required only if not using Google auth
     }
   },
+  phone: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+  },
   googleId: {
     type: String,
     sparse: true,

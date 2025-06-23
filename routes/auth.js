@@ -40,7 +40,8 @@ router.post('/register', async (req, res) => {
 // Add this route for /signup to match frontend
 router.post('/signup', async (req, res) => {
   console.log('POST /api/auth/signup hit', req.body);
-  const { name, email, password } = req.body;
+  console.log('BODY RECEIVED:', req.body);
+  const { name, email, password, phone } = req.body;
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser)
@@ -52,6 +53,7 @@ router.post('/signup', async (req, res) => {
     const newUser = new User({
       name,
       email,
+      phone,
       password: hashedPassword,
     });
 
@@ -139,22 +141,9 @@ router.post('/login', async (req, res) => {
 
 const authMiddleware = require('../middleware/auth');
 
-router.get('/profile', authMiddleware, async (req, res) => {
-  try {
-    const user = await User.findById(req.userId).select('-password');
-    res.json(user);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Something went wrong' });
-  }
-});
-
-
-
-// GET /api/auth/profile - get current logged-in user data
 router.get('/profile', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password'); // exclude password
+    const user = await User.findById(req.userId).select('-password');
     if (!user) return res.status(404).json({ msg: 'User not found' });
     res.json(user);
   } catch (err) {
@@ -162,6 +151,8 @@ router.get('/profile', auth, async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+
+
 
 
 // PUT /api/auth/profile - update user profile info

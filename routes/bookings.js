@@ -6,25 +6,29 @@ const auth = require('../middleware/auth');
 // POST /api/bookings - Create a booking
 router.post('/', auth, async (req, res) => {
   try {
-    console.log('Booking request body:', req.body);
-    console.log('User ID from token:', req.userId);
+    const { name, phone, pickupDate, returnDate, rentalId } = req.body;
 
-    const { rental, startDate, endDate } = req.body;
+    if (!name || !phone || !pickupDate || !returnDate || !rentalId) {
+      return res.status(400).json({ message: 'Missing fields' });
+    }
 
     const booking = new Booking({
-      user: req.userId, // Use req.userId instead of req.user.id
-      rental,
-      startDate,
-      endDate
+      name,
+      phone,
+      pickupDate,
+      returnDate,
+      rental: rentalId,
+      user: req.userId
     });
 
     await booking.save();
     res.status(201).json(booking);
   } catch (err) {
-    console.error('Booking creation error:', err);
-    res.status(500).json({ message: 'Server error while creating booking' });
+    console.error("Booking Save Error:", err);
+    res.status(500).json({ message: 'Server error while saving booking' });
   }
 });
+
 
 // GET /api/bookings - Get user's bookings
 router.get('/', auth, async (req, res) => {

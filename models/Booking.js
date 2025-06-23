@@ -11,13 +11,25 @@ const bookingSchema = new mongoose.Schema({
     ref: 'Rental',
     required: true
   },
-  startDate: {
+  name: {
+    type: String,
+    required: true
+  },
+  phone: {
+    type: String,
+    required: true
+  },
+  pickupDate: {
     type: Date,
     required: true
   },
-  endDate: {
+  returnDate: {
     type: Date,
     required: true
+  },
+  status: {
+    type: String,
+    default: 'Pending'
   }
 }, { timestamps: true });
 

@@ -6,6 +6,12 @@ const router = express.Router();
 const Rental = require('../models/Rental');
 const auth = require('../middleware/auth');
 
+router.use((req, res, next) => {
+  console.log(`[${req.method}] ${req.originalUrl}`);
+  next();
+});
+
+
 
 // Create rental post (protected)
 router.post('/', auth, async (req, res) => {
@@ -93,17 +99,9 @@ router.get('/search', async (req, res) => {
     }
 });
 
+
 // Get rental by ID
-router.get('/:id', async (req, res) => {
-  try {
-    const rental = await Rental.findById(req.params.id).populate('user', 'name email');
-    if (!rental) return res.status(404).json({ message: 'Rental not found' });
-    res.json(rental);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+
 
 // Image upload route
 router.post('/upload', auth, upload.single('image'), (req, res) => {
@@ -155,6 +153,27 @@ router.delete('/:id', auth, async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+// Prevent invalid non-ObjectId access to /:id
+router.get('/:id', async (req, res, next) => {
+  const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(req.params.id);
+  if (!isValidObjectId) {
+    return res.status(400).json({ message: 'Invalid rental ID format' });
+  }
+  next();
+});
+
+
+router.get('/:id', async (req, res) => {
+  try {
+    const rental = await Rental.findById(req.params.id).populate('user', 'name email');
+    if (!rental) return res.status(404).json({ message: 'Rental not found' });
+    res.json(rental);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 module.exports = router;
 
