@@ -6,15 +6,21 @@ const auth = require('../middleware/auth');
 // POST /api/bookings - Create a booking
 router.post('/', auth, async (req, res) => {
   try {
-    const { name, phone, pickupDate, returnDate, rentalId } = req.body;
+    const { name, phone, email, altPhone, address, deliveryMethod, preferredTime, specialRequests, pickupDate, returnDate, rentalId } = req.body;
 
-    if (!name || !phone || !pickupDate || !returnDate || !rentalId) {
+    if (!name || !phone || !pickupDate || !returnDate || !rentalId || !email || !address) {
       return res.status(400).json({ message: 'Missing fields' });
     }
 
     const booking = new Booking({
       name,
       phone,
+      email,
+      altPhone,
+      address,
+      deliveryMethod,
+      preferredTime,
+      specialRequests,
       pickupDate,
       returnDate,
       rental: rentalId,
@@ -26,27 +32,6 @@ router.post('/', auth, async (req, res) => {
   } catch (err) {
     console.error("Booking Save Error:", err);
     res.status(500).json({ message: 'Server error while saving booking' });
-  }
-});
-
-// GET /api/bookings/:id - Get a booking by ID
-router.get('/:id', auth, async (req, res) => {
-  try {
-    const booking = await Booking.findById(req.params.id).populate('rental');
-    
-    if (!booking) {
-      return res.status(404).json({ message: 'Booking not found' });
-    }
-    
-    // Check if the booking belongs to the authenticated user
-    if (booking.user.toString() !== req.userId) {
-      return res.status(403).json({ message: 'Not authorized to access this booking' });
-    }
-    
-    res.json(booking);
-  } catch (err) {
-    console.error("Booking Fetch Error:", err);
-    res.status(500).json({ message: 'Server error while fetching booking' });
   }
 });
 
@@ -84,6 +69,69 @@ router.get('/all', auth, async (req, res) => {
   } catch (error) {
     console.error('Error fetching all bookings:', error);
     res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// GET /api/bookings/:id - Get a booking by ID
+router.get('/:id', auth, async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id).populate('rental');
+    
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking not found' });
+    }
+    
+    // Check if the booking belongs to the authenticated user
+    if (booking.user.toString() !== req.userId) {
+      return res.status(403).json({ message: 'Not authorized to access this booking' });
+    }
+    
+    res.json(booking);
+  } catch (err) {
+    console.error("Booking Fetch Error:", err);
+    res.status(500).json({ message: 'Server error while fetching booking' });
+  }
+});
+
+// PUT /api/bookings/:id - Update a booking
+router.put('/:id', auth, async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id);
+    
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking not found' });
+    }
+    
+    // Check if the booking belongs to the authenticated user
+    if (booking.user.toString() !== req.userId) {
+      return res.status(403).json({ message: 'Not authorized to update this booking' });
+    }
+    
+    // Fields that can be updated
+    const updatableFields = [
+      'name', 'phone', 'email', 'altPhone', 'address', 
+      'deliveryMethod', 'preferredTime', 'specialRequests', 
+      'pickupDate', 'returnDate', 'status', 'paymentStatus'
+    ];
+    
+    // Update only the fields that are provided in the request
+    updatableFields.forEach(field => {
+      if (req.body[field] !== undefined) {
+        booking[field] = req.body[field];
+      }
+    });
+    
+    // Handle special case for endDate (for booking extensions)
+    if (req.body.endDate) {
+      booking.returnDate = req.body.endDate;
+    }
+    
+    await booking.save();
+    
+    res.json(booking);
+  } catch (err) {
+    console.error("Booking Update Error:", err);
+    res.status(500).json({ message: 'Server error while updating booking' });
   }
 });
 

@@ -19,6 +19,31 @@ const bookingSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  email: {
+    type: String,
+    required: false
+  },
+  altPhone: {
+    type: String,
+    required: false
+  },
+  address: {
+    type: String,
+    required: false
+  },
+  deliveryMethod: {
+    type: String,
+    enum: ['Pickup', 'Delivery'],
+    default: 'Pickup'
+  },
+  preferredTime: {
+    type: String,
+    required: false
+  },
+  specialRequests: {
+    type: String,
+    required: false
+  },
   pickupDate: {
     type: Date,
     required: true
