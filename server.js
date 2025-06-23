@@ -46,4 +46,5 @@ app.use('/api/bookings', bookingRoutes);
 
 app.use('/api/rentals', require('./routes/rentals'));
 app.use('/api/upload', require('./routes/upload'));
+app.use('/api/payments', require('./routes/payments'));
 

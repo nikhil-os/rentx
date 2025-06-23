@@ -29,6 +29,26 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
+// GET /api/bookings/:id - Get a booking by ID
+router.get('/:id', auth, async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id).populate('rental');
+    
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking not found' });
+    }
+    
+    // Check if the booking belongs to the authenticated user
+    if (booking.user.toString() !== req.userId) {
+      return res.status(403).json({ message: 'Not authorized to access this booking' });
+    }
+    
+    res.json(booking);
+  } catch (err) {
+    console.error("Booking Fetch Error:", err);
+    res.status(500).json({ message: 'Server error while fetching booking' });
+  }
+});
 
 // GET /api/bookings - Get user's bookings
 router.get('/', auth, async (req, res) => {
