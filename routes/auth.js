@@ -186,4 +186,96 @@ router.put('/profile', auth, async (req, res) => {
   }
 });
 
+// Check if user exists with email
+router.post('/check-user', async (req, res) => {
+  console.log('POST /api/auth/check-user hit', req.body);
+  const { email } = req.body;
+  
+  if (!email) {
+    console.log('Email is required');
+    return res.status(400).json({ message: 'Email is required' });
+  }
+
+  try {
+    // Find user by email
+    console.log('Finding user with email:', email);
+    const user = await User.findOne({ email });
+    
+    if (!user) {
+      console.log('User not found with email:', email);
+      return res.status(404).json({ message: 'User not found with this email' });
+    }
+
+    console.log('User found:', user._id);
+    // Return success with phone number (masked for privacy except last 4 digits)
+    const phone = user.phone || '';
+    const maskedPhone = phone.length > 4 
+      ? `${phone.slice(0, -4).replace(/\d/g, '*')}${phone.slice(-4)}` 
+      : phone;
+
+    res.status(200).json({ 
+      message: 'User found',
+      phone: user.phone || '' // For development, sending full phone. In production, use maskedPhone
+    });
+  } catch (err) {
+    console.error('Check user error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Update the reset-password route to also check email
+router.post('/reset-password', async (req, res) => {
+  console.log('POST /api/auth/reset-password hit', req.body);
+  const { email, phone, password } = req.body;
+  
+  if (!email || !phone || !password) {
+    return res.status(400).json({ message: 'Email, phone and password are required' });
+  }
+
+  try {
+    // Find user by email and phone
+    const user = await User.findOne({ email, phone });
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found with this email and phone combination' });
+    }
+
+    // Hash the new password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Update user's password
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).json({ message: 'Password reset successful' });
+  } catch (err) {
+    console.error('Password reset error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Check if email exists
+router.post('/check-email-exists', async (req, res) => {
+  console.log('POST /api/auth/check-email-exists hit', req.body);
+  const { email } = req.body;
+  
+  if (!email) {
+    return res.status(400).json({ message: 'Email is required' });
+  }
+
+  try {
+    // Find user by email
+    const user = await User.findOne({ email });
+    
+    // Return whether the email exists
+    res.status(200).json({ 
+      exists: !!user
+    });
+  } catch (err) {
+    console.error('Check email error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;
