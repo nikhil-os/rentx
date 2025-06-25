@@ -1,0 +1,14 @@
+{
+  "name": "rentx",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "rentx-frontend"
+  ],
+  "scripts": {
+    "dev": "cd rentx-frontend && npm run dev",
+    "build": "cd rentx-frontend && npm run build",
+    "start": "cd rentx-frontend && npm run start",
+    "lint": "cd rentx-frontend && npm run lint"
+  }
+} 
