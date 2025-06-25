@@ -1,0 +1,10 @@
+{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "env": {
+    "NEXT_PUBLIC_API_URL": "https://rentx-backend-nikhil-os.vercel.app/api"
+  },
+  "buildCommand": "next build",
+  "outputDirectory": ".next"
+} 

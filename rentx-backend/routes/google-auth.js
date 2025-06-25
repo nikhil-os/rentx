@@ -5,6 +5,21 @@ const { signInWithPopup, GoogleAuthProvider } = require('firebase/auth');
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
+// Mock Google auth endpoint
+router.post('/login', (req, res) => {
+  res.status(200).json({ 
+    success: true, 
+    message: 'User logged in with Google successfully',
+    token: 'mock-google-jwt-token',
+    user: {
+      id: 'google-123456',
+      name: 'Google User',
+      email: req.body.email || 'google-user@example.com',
+      picture: 'https://via.placeholder.com/150'
+    }
+  });
+});
+
 router.post('/google', async (req, res) => {
   try {
     const { idToken } = req.body;

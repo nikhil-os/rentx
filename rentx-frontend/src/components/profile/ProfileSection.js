@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { api } from '@/utils/api';
+import { api, getImageUrl } from '@/utils/api';
 
 export default function ProfileSection() {
   const [user, setUser] = useState(null);
@@ -366,7 +366,7 @@ export default function ProfileSection() {
                                       <div className="flex items-center">
                                         <div className="h-10 w-10 flex-shrink-0 relative">
                                           <Image
-                                            src={booking.rental?.image && !booking.rental.image.startsWith('http') ? `http://localhost:5000${booking.rental.image}` : (booking.rental?.image || '/ref1.png')}
+                                            src={getImageUrl(booking.rental?.image || '/ref1.png')}
                                             alt={booking.rental?.name || booking.rental?.title || "Rental item"}
                                             fill
                                             className="rounded-md object-cover"
@@ -440,7 +440,7 @@ export default function ProfileSection() {
                                       <div className="flex items-center">
                                         <div className="h-10 w-10 flex-shrink-0 relative">
                                           <Image
-                                            src={booking.rental?.image && !booking.rental.image.startsWith('http') ? `http://localhost:5000${booking.rental.image}` : (booking.rental?.image || '/ref1.png')}
+                                            src={getImageUrl(booking.rental?.image || '/ref1.png')}
                                             alt={booking.rental?.name || booking.rental?.title || "Rental item"}
                                             fill
                                             className="rounded-md object-cover"

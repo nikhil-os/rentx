@@ -1,14 +1,19 @@
 {
   "name": "rentx",
   "version": "1.0.0",
-  "private": true,
-  "workspaces": [
-    "rentx-frontend"
-  ],
+  "description": "RentX - A rental marketplace platform",
   "scripts": {
-    "dev": "cd rentx-frontend && npm run dev",
-    "build": "cd rentx-frontend && npm run build",
-    "start": "cd rentx-frontend && npm run start",
-    "lint": "cd rentx-frontend && npm run lint"
+    "install:backend": "cd rentx-backend && npm install",
+    "install:frontend": "cd rentx-frontend && npm install",
+    "install": "npm run install:backend && npm run install:frontend",
+    "dev:backend": "cd rentx-backend && npm run dev",
+    "dev:frontend": "cd rentx-frontend && npm run dev",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build:frontend": "cd rentx-frontend && npm run build",
+    "start:backend": "cd rentx-backend && npm start",
+    "start:frontend": "cd rentx-frontend && npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
   }
 } 
