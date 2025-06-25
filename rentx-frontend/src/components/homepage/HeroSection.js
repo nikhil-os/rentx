@@ -38,10 +38,17 @@ export default function HeroSection() {
 					);
 					allProducts.push(...filtered);
 				}
+				
+				// Determine the base URL for images based on environment
+				const isProduction = process.env.NODE_ENV === 'production';
+				const imageBaseUrl = isProduction 
+					? 'https://rentx-backend-seven.vercel.app'
+					: 'http://localhost:5000';
+				
 				const mapped = allProducts.map((item) => ({
 					image:
 						item.image && !item.image.startsWith("http")
-							? `http://localhost:5000${item.image}`
+							? `${imageBaseUrl}${item.image}` // Use environment-appropriate base URL
 							: item.image || item.img || "/ref1.png",
 					title: item.name || item.title || "Product",
 					subtitle: item.price ? `₹${item.price}/day` : item.category || "",
@@ -87,6 +94,11 @@ export default function HeroSection() {
 	const goTo = (idx) => setCurrent(idx);
 	const prev = () => setCurrent((current - 1 + slides.length) % slides.length);
 	const next = () => setCurrent((current + 1) % slides.length);
+
+	// Determine the backend URL based on environment for error display
+	const backendUrl = process.env.NODE_ENV === 'production' 
+		? 'https://rentx-backend-seven.vercel.app'
+		: 'http://localhost:5000';
 
 	return (
 		<section
@@ -146,7 +158,7 @@ export default function HeroSection() {
 					{error && (
 						<div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg">
 							<p><strong>Error:</strong> {error}</p>
-							<p className="text-sm mt-1">Make sure the backend server is running at http://localhost:5000</p>
+							<p className="text-sm mt-1">Make sure the backend server is running at {backendUrl}</p>
 						</div>
 					)}
 				</div>

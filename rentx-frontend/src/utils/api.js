@@ -1,7 +1,26 @@
 // src/utils/api.js
 // Centralized API utility for RentX frontend
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+// Original URL configuration
+// const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+
+// Get the base URL based on environment
+const getBaseUrl = () => {
+  // Check if running in production or development
+  const isProduction = process.env.NODE_ENV === 'production';
+  
+  // Use environment variable if available, otherwise use a fallback
+  const envUrl = process.env.NEXT_PUBLIC_API_URL;
+  
+  if (envUrl) return envUrl;
+  
+  // Fallback URLs
+  return isProduction 
+    ? 'https://rentx-backend-seven.vercel.app/api' // Production backend URL
+    : 'http://localhost:5000/api';                 // Development backend URL
+};
+
+const API_BASE_URL = getBaseUrl();
 
 function getToken() {
   if (typeof window !== 'undefined') {
