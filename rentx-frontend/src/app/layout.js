@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "@/components/homepage/Navbar";
 import Footer from "@/components/homepage/Footer";
 import ChatbotWidget from "@/components/homepage/ChatbotWidget";
+import BackendConnectionCheck from "@/components/common/BackendConnectionCheck";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,6 +30,7 @@ export default function RootLayout({ children }) {
         {children}
         <Footer />
         <ChatbotWidget />
+        <BackendConnectionCheck />
       </body>
     </html>
   );

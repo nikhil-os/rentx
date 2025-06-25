@@ -31,6 +31,7 @@ async function request(endpoint, { method = 'GET', data, headers = {}, ...rest }
   }
   
   try {
+    console.log(`Fetching from: ${API_BASE_URL}${endpoint}`);
     const res = await fetch(`${API_BASE_URL}${endpoint}`, config);
     const contentType = res.headers.get('content-type');
     
@@ -68,6 +69,13 @@ async function request(endpoint, { method = 'GET', data, headers = {}, ...rest }
     return body;
   } catch (error) {
     console.error(`API Error (${endpoint}):`, error);
+    
+    // Handle network errors more gracefully
+    if (error.message === 'Failed to fetch') {
+      console.error('Network error: Could not connect to the backend server.');
+      throw new Error('Could not connect to the backend server. Please make sure the backend is running.');
+    }
+    
     throw error.message || error;
   }
 }
@@ -107,6 +115,9 @@ export async function uploadFile(endpoint, file, field = 'file') {
     return body;
   } catch (error) {
     console.error(`Upload Error (${endpoint}):`, error);
+    if (error.message === 'Failed to fetch') {
+      throw new Error('Could not connect to the backend server. Please make sure the backend is running.');
+    }
     throw error;
   }
 }

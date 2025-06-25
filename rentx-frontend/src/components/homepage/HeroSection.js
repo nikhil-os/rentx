@@ -18,11 +18,19 @@ const categorySlugs = [
 export default function HeroSection() {
 	const [slides, setSlides] = useState([]);
 	const [current, setCurrent] = useState(0);
+	const [error, setError] = useState(null);
+	const [loading, setLoading] = useState(true);
+
 	useEffect(() => {
 		async function fetchSlides() {
 			try {
-				const allProducts = [];
+				setLoading(true);
+				setError(null);
+				console.log('Fetching products from API...');
 				const data = await api.get("/rentals");
+				console.log('Products received:', data);
+				
+				const allProducts = [];
 				for (const category of categorySlugs) {
 					const filtered = data.filter(
 						(item) =>
@@ -42,28 +50,32 @@ export default function HeroSection() {
 				setSlides(
 					mapped.length
 						? mapped
-						: [
-								{
-									image: "/ref1.png",
-									title: "No products found",
-									subtitle: "Please check back later.",
-									button: { text: "Explore", link: "/category" },
-								},
-						  ]
+						: [getFallbackSlide("No products found", "Please check back later.")]
 				);
 			} catch (e) {
+				console.error('Error fetching slides:', e);
+				setError(e.message || 'Failed to fetch products');
 				setSlides([
-					{
-						image: "/ref1.png",
-						title: "No products found",
-						subtitle: "Please check back later.",
-						button: { text: "Explore", link: "/category" },
-					},
+					getFallbackSlide(
+						"Connection Error", 
+						"Could not connect to the server. Please try again later."
+					),
 				]);
+			} finally {
+				setLoading(false);
 			}
 		}
 		fetchSlides();
 	}, []);
+
+	// Helper function for fallback slides
+	const getFallbackSlide = (title, subtitle) => ({
+		image: "/ref1.png",
+		title: title,
+		subtitle: subtitle,
+		button: { text: "Explore", link: "/category" },
+	});
+
 	useEffect(() => {
 		if (slides.length === 0) return;
 		const interval = setInterval(() => {
@@ -130,78 +142,93 @@ export default function HeroSection() {
 							List Your Item
 						</a>
 					</div>
+					
+					{error && (
+						<div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg">
+							<p><strong>Error:</strong> {error}</p>
+							<p className="text-sm mt-1">Make sure the backend server is running at http://localhost:5000</p>
+						</div>
+					)}
 				</div>
 				{/* Right: Slider */}
 				<div className="lg:w-1/2 w-full flex justify-center items-center">
 					<div className="relative w-[420px] h-[420px] rounded-2xl overflow-hidden shadow-2xl bg-white/10 flex items-center">
-						{slides.map((slide, idx) => (
-							<div
-								key={idx}
-								className={`absolute top-0 left-0 w-full h-full transition-opacity duration-700 ${
-									idx === current ? "opacity-100 z-10" : "opacity-0 z-0"
-								}`}
-								style={{ transitionProperty: "opacity" }}
-							>
-								<Image
-									src={slide.image}
-									alt={slide.title}
-									fill
-									style={{ objectFit: "cover" }}
-									className="rounded-2xl"
-									priority={idx === 0}
-								/>
-								<div className="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-black/70 to-transparent flex flex-col items-start justify-end rounded-b-2xl">
-									<h3
-										className="text-2xl font-serif font-bold text-white mb-2"
-										style={{ textShadow: "0 2px 8px #000" }}
-									>
-										{slide.title}
-									</h3>
-									<p
-										className="text-base text-white mb-4"
-										style={{ textShadow: "0 2px 8px #000" }}
-									>
-										{slide.subtitle}
-									</p>
-									<a
-										href={slide.button.link}
-										className="px-6 py-2 rounded bg-[#D4A017] text-[#1A1A1A] font-serif font-semibold text-lg shadow hover:bg-[#fff] hover:text-[#1B3C34] transition"
-									>
-										{slide.button.text}
-									</a>
-								</div>
+						{loading ? (
+							<div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-75">
+								<div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#1B3C34]"></div>
 							</div>
-						))}
-						{/* Navigation Arrows */}
-						<button
-							onClick={prev}
-							className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#1B3C34] rounded-full w-10 h-10 flex items-center justify-center shadow-lg z-20"
-							aria-label="Previous slide"
-							style={{ fontSize: 28 }}
-						>
-							&#8249;
-						</button>
-						<button
-							onClick={next}
-							className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#1B3C34] rounded-full w-10 h-10 flex items-center justify-center shadow-lg z-20"
-							aria-label="Next slide"
-							style={{ fontSize: 28 }}
-						>
-							&#8250;
-						</button>
-						{/* Dots */}
-						<div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-							{slides.map((_, idx) => (
+						) : (
+							<>
+								{slides.map((slide, idx) => (
+									<div
+										key={idx}
+										className={`absolute top-0 left-0 w-full h-full transition-opacity duration-700 ${
+											idx === current ? "opacity-100 z-10" : "opacity-0 z-0"
+										}`}
+										style={{ transitionProperty: "opacity" }}
+									>
+										<Image
+											src={slide.image}
+											alt={slide.title}
+											fill
+											style={{ objectFit: "cover" }}
+											className="rounded-2xl"
+											priority={idx === 0}
+										/>
+										<div className="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-black/70 to-transparent flex flex-col items-start justify-end rounded-b-2xl">
+											<h3
+												className="text-2xl font-serif font-bold text-white mb-2"
+												style={{ textShadow: "0 2px 8px #000" }}
+											>
+												{slide.title}
+											</h3>
+											<p
+												className="text-base text-white mb-4"
+												style={{ textShadow: "0 2px 8px #000" }}
+											>
+												{slide.subtitle}
+											</p>
+											<a
+												href={slide.button.link}
+												className="px-6 py-2 rounded bg-[#D4A017] text-[#1A1A1A] font-serif font-semibold text-lg shadow hover:bg-[#fff] hover:text-[#1B3C34] transition"
+											>
+												{slide.button.text}
+											</a>
+										</div>
+									</div>
+								))}
+								{/* Navigation Arrows */}
 								<button
-									key={idx}
-									onClick={() => goTo(idx)}
-									className={`w-3 h-3 rounded-full ${
-										idx === current ? "bg-[#D4A017]" : "bg-white/60"
-									} border border-[#1B3C34]`}
-									aria-label={`Go to slide ${idx + 1}`}
-								/>
-							))}
-						</div>
+									onClick={prev}
+									className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#1B3C34] rounded-full w-10 h-10 flex items-center justify-center shadow-lg z-20"
+									aria-label="Previous slide"
+									style={{ fontSize: 28 }}
+								>
+									&#8249;
+								</button>
+								<button
+									onClick={next}
+									className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#1B3C34] rounded-full w-10 h-10 flex items-center justify-center shadow-lg z-20"
+									aria-label="Next slide"
+									style={{ fontSize: 28 }}
+								>
+									&#8250;
+								</button>
+								{/* Dots */}
+								<div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+									{slides.map((_, idx) => (
+										<button
+											key={idx}
+											onClick={() => goTo(idx)}
+											className={`w-3 h-3 rounded-full ${
+												idx === current ? "bg-[#D4A017]" : "bg-white/60"
+											} border border-[#1B3C34]`}
+											aria-label={`Go to slide ${idx + 1}`}
+										/>
+									))}
+								</div>
+							</>
+						)}
 					</div>
 				</div>
 			</div>
