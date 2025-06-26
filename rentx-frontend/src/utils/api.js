@@ -1,45 +1,7 @@
 // src/utils/api.js
 // Centralized API utility for RentX frontend
 
-// Original URL configuration
-// const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-
-// Get the base URL based on environment
-const getBaseUrl = () => {
-  // Check if running in production or development
-  const isProduction = process.env.NODE_ENV === 'production';
-  
-  // Use environment variable if available, otherwise use a fallback
-  const envUrl = process.env.NEXT_PUBLIC_API_URL;
-  
-  if (envUrl) return envUrl;
-  
-  // Fallback URLs
-  return isProduction 
-    ? 'https://rentx-backend-nikhil-os.vercel.app/api' // Production backend URL
-    : 'http://localhost:5000/api';                     // Development backend URL
-};
-
-const API_BASE_URL = getBaseUrl();
-
-// Get image URL with correct base path
-export const getImageUrl = (imagePath) => {
-  if (!imagePath) return '';
-  
-  // If it's already a full URL, return as is
-  if (imagePath.startsWith('http')) {
-    return imagePath;
-  }
-  
-  // If it's a relative path starting with /uploads, convert to absolute URL
-  if (imagePath.startsWith('/uploads')) {
-    const baseUrl = getBaseUrl().replace('/api', '');
-    return `${baseUrl}${imagePath}`;
-  }
-  
-  // Otherwise return the path as is
-  return imagePath;
-};
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 function getToken() {
   if (typeof window !== 'undefined') {

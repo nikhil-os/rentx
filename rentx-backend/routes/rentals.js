@@ -11,39 +11,7 @@ router.use((req, res, next) => {
   next();
 });
 
-// Mock rentals data
-const rentals = [
-  {
-    _id: '1',
-    title: 'Modern Apartment',
-    description: 'A beautiful modern apartment in the city center',
-    price: 1500,
-    image: '/uploads/1749194838830.png',
-    category: 'furniture',
-    location: 'New York',
-    user: { name: 'John Doe' }
-  },
-  {
-    _id: '2',
-    title: 'Vintage Camera',
-    description: 'Professional vintage camera for rent',
-    price: 200,
-    image: '/uploads/1749194935554.png',
-    category: 'electronics',
-    location: 'Los Angeles',
-    user: { name: 'Jane Smith' }
-  },
-  {
-    _id: '3',
-    title: 'Mountain Bike',
-    description: 'High-performance mountain bike for adventures',
-    price: 100,
-    image: '/uploads/1749195039883.png',
-    category: 'sports',
-    location: 'Denver',
-    user: { name: 'Mike Johnson' }
-  }
-];
+
 
 // Create rental post (protected)
 router.post('/', auth, async (req, res) => {
@@ -80,9 +48,16 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+
 // Get all rentals
-router.get('/', (req, res) => {
-  res.status(200).json(rentals);
+router.get('/', async (req, res) => {
+  try {
+    const rentals = await Rental.find().populate('user', 'name email');
+    res.json(rentals);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 // Place this route BEFORE any route with '/:id' to avoid route conflicts
@@ -124,14 +99,9 @@ router.get('/search', async (req, res) => {
     }
 });
 
+
 // Get rental by ID
-router.get('/:id', (req, res) => {
-  const rental = rentals.find(r => r._id === req.params.id);
-  if (!rental) {
-    return res.status(404).json({ message: 'Rental not found' });
-  }
-  res.status(200).json(rental);
-});
+
 
 // Image upload route
 router.post('/upload', auth, upload.single('image'), (req, res) => {
@@ -192,6 +162,7 @@ router.get('/:id', async (req, res, next) => {
   next();
 });
 
+
 router.get('/:id', async (req, res) => {
   try {
     const rental = await Rental.findById(req.params.id).populate('user', 'name email');
@@ -202,6 +173,7 @@ router.get('/:id', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 module.exports = router;
 

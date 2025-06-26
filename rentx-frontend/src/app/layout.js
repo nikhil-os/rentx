@@ -2,7 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/homepage/Navbar";
 import Footer from "@/components/homepage/Footer";
-// import ChatbotWidget from "@/components/homepage/ChatbotWidget";
+import ChatbotWidget from "@/components/homepage/ChatbotWidget";
 import BackendConnectionCheck from "@/components/common/BackendConnectionCheck";
 
 const geistSans = Geist({
@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
         <Navbar />
         {children}
         <Footer />
-        {/* <ChatbotWidget /> */}
+        <ChatbotWidget />
         <BackendConnectionCheck />
       </body>
     </html>

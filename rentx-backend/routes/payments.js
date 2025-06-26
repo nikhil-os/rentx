@@ -120,25 +120,4 @@ router.post('/verify', auth, async (req, res) => {
   }
 });
 
-// Mock payment endpoints
-router.post('/create-order', (req, res) => {
-  res.status(200).json({
-    success: true,
-    orderId: 'mock-order-' + Date.now(),
-    amount: req.body.amount || 1000,
-    currency: 'INR'
-  });
-});
-
-router.post('/verify-payment', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: 'Payment verified successfully',
-    transaction: {
-      id: 'txn-' + Date.now(),
-      status: 'completed'
-    }
-  });
-});
-
 module.exports = router; 

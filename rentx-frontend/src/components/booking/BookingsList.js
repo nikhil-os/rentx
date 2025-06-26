@@ -2,7 +2,7 @@
 // List all bookings for the current user
 'use client';
 import { useEffect, useState } from 'react';
-import { api, getImageUrl } from '@/utils/api';
+import { api } from '@/utils/api';
 import { useRouter } from 'next/navigation';
 
 export default function BookingsList() {
@@ -88,7 +88,7 @@ export default function BookingsList() {
               <div className="flex items-center gap-4 mb-2">
                 <div className="flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-gray-100 border border-emerald-200 flex items-center justify-center">
                   {b.rental?.image && (
-                    <img src={getImageUrl(b.rental?.image || '')} alt={b.rental?.title} className="object-cover w-full h-full" />
+                    <img src={b.rental.image.startsWith('http') ? b.rental.image : `http://localhost:5000${b.rental.image}`} alt={b.rental?.title} className="object-cover w-full h-full" />
                   )}
                 </div>
                 <div>
