@@ -82,46 +82,43 @@ export default function HeroSection() {
 	const next = () => setCurrent((current + 1) % slides.length);
 
 	return (
-		<section className="relative overflow-hidden min-h-[90vh] bg-[#0A0F2C] text-white flex items-center justify-center px-6">
-			
+		<section className="relative overflow-hidden min-h-[65vh] bg-[#0A0F2C] text-white flex items-center justify-center px-6 py-12">
 			{/* Glowing Blobs */}
 			<div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-				<div className="absolute top-[20%] left-[10%] w-[300px] h-[300px] bg-[#FFD700] opacity-10 blur-3xl animate-pulse rounded-full" />
-				<div className="absolute bottom-[10%] right-[10%] w-[250px] h-[250px] bg-[#F0C9B7] opacity-10 blur-2xl animate-ping rounded-full" />
+				<div className="absolute top-[10%] left-[5%] w-[220px] h-[220px] bg-[#FFD700] opacity-10 blur-2xl animate-pulse rounded-full" />
+				<div className="absolute bottom-[5%] right-[5%] w-[180px] h-[180px] bg-[#F0C9B7] opacity-10 blur-2xl animate-ping rounded-full" />
 			</div>
 
 			{/* Main Content */}
-			<div className="relative z-10 max-w-7xl w-full flex flex-col lg:flex-row items-center justify-between gap-12">
-				
+			<div className="relative z-10 max-w-7xl w-full flex flex-col lg:flex-row items-start justify-between gap-0 px-0">
+
 				{/* Left Text Content */}
 				<motion.div
 					initial={{ opacity: 0, x: -60 }}
 					animate={loaded ? { opacity: 1, x: 0 } : {}}
 					transition={{ duration: 1 }}
-					className="text-left lg:w-1/2"
+					className="text-left lg:w-[48%] w-full px-2"
 				>
-					<h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold leading-tight mb-6 text-[#EAE7DC] drop-shadow-lg">
+					<h1 className="text-4xl md:text-5xl font-serif font-bold text-[#EAE7DC] leading-tight">
 						Rent Anything.<br />Anytime.<br />Anywhere.
 					</h1>
-					<p className="text-lg text-[#D3D6DB] mb-8 leading-relaxed max-w-md">
+					<p className="text-base md:text-lg text-[#D3D6DB] max-w-md leading-relaxed">
 						India’s smartest rental platform for gadgets, fashion, vehicles and more.
 					</p>
-
-					<div className="flex gap-5">
+					<div className="flex gap-4 mt-6">
 						<a
 							href="/category"
-							className="px-6 py-3 bg-[#F5E6C8] text-[#0A0F2C] rounded-lg font-semibold text-lg shadow hover:bg-white transition"
+							className="px-6 py-3 bg-[#F5E6C8] text-[#0A0F2C] rounded-md font-semibold text-base shadow hover:bg-white transition"
 						>
 							Start Renting
 						</a>
 						<a
 							href="/add-product"
-							className="px-6 py-3 border border-[#F5E6C8] text-[#F5E6C8] rounded-lg text-lg hover:bg-[#F5E6C8] hover:text-[#0A0F2C] transition"
+							className="px-6 py-3 border border-[#F5E6C8] text-[#F5E6C8] rounded-md text-base hover:bg-[#F5E6C8] hover:text-[#0A0F2C] transition"
 						>
 							List Your Item
 						</a>
 					</div>
-
 					{error && (
 						<div className="mt-4 p-3 bg-red-200/20 text-red-300 rounded-lg border border-red-300">
 							<p><strong>Error:</strong> {error}</p>
@@ -131,16 +128,17 @@ export default function HeroSection() {
 				</motion.div>
 
 				{/* Right Slider Content */}
-				<motion.div
-					initial={{ opacity: 0, x: 60 }}
-					animate={loaded ? { opacity: 1, x: 0 } : {}}
-					transition={{ duration: 1.2 }}
-					className="lg:w-1/2 flex justify-center"
-				>
-					<div className="relative w-[320px] h-[420px] rounded-2xl overflow-hidden border border-[#F5E6C8] bg-[#1D2541] shadow-xl">
+						<motion.div
+						initial={{ opacity: 0, x: 60 }}
+						animate={loaded ? { opacity: 1, x: 0 } : {}}
+						transition={{ duration: 1.2 }}
+						className="lg:w-[48%] w-full flex justify-end px-2"
+						>
+
+					<div className="relative w-full max-w-[420px] h-[520px] rounded-2xl overflow-hidden border border-[#F5E6C8] bg-[#1D2541] shadow-lg">
 						{loading ? (
 							<div className="absolute inset-0 flex items-center justify-center bg-gray-100/60">
-								<div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#FFD700]"></div>
+								<div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#FFD700]"></div>
 							</div>
 						) : (
 							slides.map((slide, idx) => (
@@ -155,12 +153,12 @@ export default function HeroSection() {
 										className="object-cover"
 										priority={idx === 0}
 									/>
-									<div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end rounded-b-2xl">
-										<h3 className="text-xl font-bold text-white">{slide.title}</h3>
-										<p className="text-sm text-white mb-2">{slide.subtitle}</p>
+									<div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end rounded-b-xl">
+										<h3 className="text-lg font-semibold text-white">{slide.title}</h3>
+										<p className="text-sm text-white mb-1">{slide.subtitle}</p>
 										<a
 											href={slide.button.link}
-											className="inline-block px-4 py-2 mt-2 bg-[#FFD700] text-[#1A1A1A] rounded hover:bg-white transition"
+											className="inline-block px-4 py-2 mt-2 bg-[#FFD700] text-[#1A1A1A] rounded hover:bg-white transition text-sm"
 										>
 											{slide.button.text}
 										</a>
@@ -168,11 +166,6 @@ export default function HeroSection() {
 								</div>
 							))
 						)}
-
-						{/* Arrows */}
-						<button onClick={prev} className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#1B3C34] rounded-full w-9 h-9 flex items-center justify-center z-20">&#8249;</button>
-						<button onClick={next} className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#1B3C34] rounded-full w-9 h-9 flex items-center justify-center z-20">&#8250;</button>
-
 						{/* Dots */}
 						<div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
 							{slides.map((_, idx) => (
