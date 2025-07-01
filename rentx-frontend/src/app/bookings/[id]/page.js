@@ -80,7 +80,7 @@ export default function BookingDetailsPage() {
         <div className="flex flex-col md:flex-row gap-8 mb-8">
           <div className="flex-shrink-0 w-40 h-40 rounded-2xl overflow-hidden bg-gray-100 border border-emerald-200 flex items-center justify-center mx-auto md:mx-0">
             {booking.rental?.image && (
-              <img src={booking.rental.image.startsWith('http') ? booking.rental.image : `http://localhost:5000${booking.rental.image}`} alt={booking.rental?.title} className="object-cover w-full h-full" />
+              <img src={booking.rental.image.startsWith('http') ? booking.rental.image : `${process.env.NEXT_PUBLIC_IMAGE_URL || 'https://rentx-nikhil-sahus-projects-0bc03434.vercel.app'}${booking.rental.image}`} alt={booking.rental?.title} className="object-cover w-full h-full" />
             )}
           </div>
           <div className="flex-1 flex flex-col gap-2 justify-center">
@@ -116,4 +116,4 @@ export default function BookingDetailsPage() {
       </div>
     </div>
   );
-} 
+}

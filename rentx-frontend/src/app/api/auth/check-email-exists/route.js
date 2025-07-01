@@ -21,7 +21,7 @@ export async function POST(request) {
     }
 
     // Call the backend API directly instead of using the api utility
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://rentx-nikhil-sahus-projects-0bc03434.vercel.app/api';
     console.log(`Calling backend API: ${API_BASE_URL}/auth/check-email-exists`);
     
     try {
@@ -80,4 +80,4 @@ export async function POST(request) {
       { status: 500 }
     );
   }
-} 
+}

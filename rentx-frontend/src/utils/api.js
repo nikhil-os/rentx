@@ -1,7 +1,7 @@
 // src/utils/api.js
 // Centralized API utility for RentX frontend
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://rentx-nikhil-sahus-projects-0bc03434.vercel.app/api';
 
 function getToken() {
   if (typeof window !== 'undefined') {

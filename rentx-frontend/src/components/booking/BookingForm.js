@@ -157,7 +157,7 @@ export default function BookingForm({ rentalId }) {
       return;
     }
     try {
-      await fetch('http://localhost:5000/api/bookings', {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://rentx-nikhil-sahus-projects-0bc03434.vercel.app/api'}/bookings`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

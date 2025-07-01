@@ -366,7 +366,7 @@ export default function ProfileSection() {
                                       <div className="flex items-center">
                                         <div className="h-10 w-10 flex-shrink-0 relative">
                                           <Image
-                                            src={booking.rental?.image && !booking.rental.image.startsWith('http') ? `http://localhost:5000${booking.rental.image}` : (booking.rental?.image || '/ref1.png')}
+                                            src={booking.rental?.image && !booking.rental.image.startsWith('http') ? `${process.env.NEXT_PUBLIC_IMAGE_URL || 'https://rentx-nikhil-sahus-projects-0bc03434.vercel.app'}${booking.rental.image}` : (booking.rental?.image || '/ref1.png')}
                                             alt={booking.rental?.name || booking.rental?.title || "Rental item"}
                                             fill
                                             className="rounded-md object-cover"
@@ -440,7 +440,7 @@ export default function ProfileSection() {
                                       <div className="flex items-center">
                                         <div className="h-10 w-10 flex-shrink-0 relative">
                                           <Image
-                                            src={booking.rental?.image && !booking.rental.image.startsWith('http') ? `http://localhost:5000${booking.rental.image}` : (booking.rental?.image || '/ref1.png')}
+                                            src={booking.rental?.image && !booking.rental.image.startsWith('http') ? `${process.env.NEXT_PUBLIC_IMAGE_URL || 'https://rentx-nikhil-sahus-projects-0bc03434.vercel.app'}${booking.rental.image}` : (booking.rental?.image || '/ref1.png')}
                                             alt={booking.rental?.name || booking.rental?.title || "Rental item"}
                                             fill
                                             className="rounded-md object-cover"
@@ -523,4 +523,4 @@ export default function ProfileSection() {
       </div>
     </div>
   );
-} 
+}

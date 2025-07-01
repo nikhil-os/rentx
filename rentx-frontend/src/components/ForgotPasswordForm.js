@@ -74,7 +74,7 @@ export default function ForgotPasswordForm() {
       
       // First try to check if the email exists directly with the backend
       try {
-        const directResponse = await fetch('http://localhost:5000/api/auth/check-email-exists', {
+        const directResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://rentx-nikhil-sahus-projects-0bc03434.vercel.app/api'}/auth/check-email-exists`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ export default function ForgotPasswordForm() {
           
           if (directData.exists) {
             // Now get the user's phone number directly
-            const userResponse = await fetch('http://localhost:5000/api/auth/check-user', {
+            const userResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://rentx-nikhil-sahus-projects-0bc03434.vercel.app/api'}/auth/check-user`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',

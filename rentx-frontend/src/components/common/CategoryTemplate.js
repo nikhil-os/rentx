@@ -123,7 +123,7 @@ export default function CategoryTemplate({
               <div key={item._id || idx} className="bg-white rounded-lg shadow-md hover:shadow-lg transition p-4 flex flex-col h-full">
                 <div className="relative">
                   <Image
-                    src={item.image && !item.image.startsWith('http') ? `http://localhost:5000${item.image}` : (item.image || item.img || '/ref1.png')}
+                    src={item.image && !item.image.startsWith('http') ? `${process.env.NEXT_PUBLIC_IMAGE_URL || 'https://rentx-nikhil-sahus-projects-0bc03434.vercel.app'}${item.image}` : (item.image || item.img || '/ref1.png')}
                     alt={item.name || item.title}
                     width={400}
                     height={200}
@@ -181,7 +181,7 @@ export default function CategoryTemplate({
                 <div className="flex flex-col md:flex-row gap-4">
                   <div className="md:w-1/4 relative">
                     <Image
-                      src={item.image && !item.image.startsWith('http') ? `http://localhost:5000${item.image}` : (item.image || item.img || '/ref1.png')}
+                      src={item.image && !item.image.startsWith('http') ? `${process.env.NEXT_PUBLIC_IMAGE_URL || 'https://rentx-nikhil-sahus-projects-0bc03434.vercel.app'}${item.image}` : (item.image || item.img || '/ref1.png')}
                       alt={item.name || item.title}
                       width={300}
                       height={200}
@@ -263,4 +263,4 @@ export default function CategoryTemplate({
       </div>
     </section>
   );
-} 
+}
