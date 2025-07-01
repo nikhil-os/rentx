@@ -2,6 +2,9 @@
 // Centralized API utility for RentX frontend
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const IMAGE_BASE_URL = process.env.NEXT_PUBLIC_IMAGE_URL;
+console.log("[DEBUG] API base (process.env.NEXT_PUBLIC_API_URL):", API_BASE_URL);
+console.log("[DEBUG] IMAGE base (process.env.NEXT_PUBLIC_IMAGE_URL):", IMAGE_BASE_URL);
 
 function getToken() {
   if (typeof window !== 'undefined') {
@@ -11,9 +14,9 @@ function getToken() {
 }
 
 async function request(endpoint, { method = 'GET', data, headers = {}, ...rest } = {}) {
-  console.log(`API Request: ${method} ${API_BASE_URL}${endpoint}`);
+  console.log(`[DEBUG] API Request: ${method} ${API_BASE_URL}${endpoint}`);
   if (data) {
-    console.log('Request data:', data);
+    console.log('[DEBUG] Request data:', data);
   }
   
   const token = getToken();
@@ -31,7 +34,7 @@ async function request(endpoint, { method = 'GET', data, headers = {}, ...rest }
   }
   
   try {
-    console.log(`Fetching from: ${API_BASE_URL}${endpoint}`);
+    console.log(`[DEBUG] Fetching from: ${API_BASE_URL}${endpoint}`);
     const res = await fetch(`${API_BASE_URL}${endpoint}`, config);
     const contentType = res.headers.get('content-type');
     
@@ -56,7 +59,7 @@ async function request(endpoint, { method = 'GET', data, headers = {}, ...rest }
       }
     }
     
-    console.log(`API Response (${res.status}):`, body);
+    console.log(`[DEBUG] API Response (${res.status}):`, body);
     
     if (!res.ok) {
       const errorMessage = typeof body === 'object' && body !== null
@@ -68,7 +71,7 @@ async function request(endpoint, { method = 'GET', data, headers = {}, ...rest }
     
     return body;
   } catch (error) {
-    console.error(`API Error (${endpoint}):`, error);
+    console.error(`[DEBUG] API Error (${endpoint}):`, error);
     
     // Handle network errors more gracefully
     if (error.message === 'Failed to fetch') {
