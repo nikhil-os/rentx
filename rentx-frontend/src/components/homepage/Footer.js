@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div>
             <h4 className="font-bold text-xl mb-3 flex items-center"><i className="fas fa-exchange-alt mr-2"></i>RentX</h4>
-            <p className="mb-4">India's most trusted rental platform connecting people who need items with those who have them to rent.</p>
+            <p className="mb-4">India&apos;s most trusted rental platform connecting people who need items with those who have them to rent.</p>
             <div className="flex gap-3 text-lg">
               <a href="https://facebook.com"><i className="fab fa-facebook-f"></i></a>
               <a href="https://twitter.com"><i className="fab fa-twitter"></i></a>

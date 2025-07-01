@@ -1,19 +1,15 @@
-'use client';
-// booking/page.js
-// Booking page route for /booking
+export const dynamic = "force-dynamic";
 
-import { useSearchParams } from 'next/navigation';
-import BookingForm from "@/components/booking/BookingForm";
+import { Suspense } from 'react';
+import BookingSectionClient from '@/components/booking/BookingSectionClient';
 import ChatbotWidget from "@/components/homepage/ChatbotWidget";
 
 export default function BookingPage() {
-  const searchParams = useSearchParams();
-  const rentalId = searchParams.get('rentalId');
   return (
     <main className="bg-[#F8F1E9] min-h-screen flex flex-col justify-between">
-      <div className="flex flex-col items-center justify-center flex-1 py-16">
-        <BookingForm rentalId={rentalId} />
-      </div>
+      <Suspense fallback={<div>Loading booking...</div>}>
+        <BookingSectionClient />
+      </Suspense>
       <ChatbotWidget />
     </main>
   );

@@ -113,16 +113,14 @@ export default function HeroSection() {
 						Rent Anything. Anytime. Anywhere.
 					</h1>
 					<p
-						className="mb-8"
+						className="mb-8 text-lg md:text-xl text-white drop-shadow-lg"
 						style={{
-							fontSize: "1.25rem",
-							color: "#fff",
 							fontWeight: 400,
 							textShadow: "0 2px 8px rgba(27,60,52,0.18)",
 							maxWidth: 520,
 						}}
 					>
-						Welcome to RentX – India's most trusted rental platform for everyday
+						Welcome to RentX – India&apos;s most trusted rental platform for everyday
 						needs. Powered by AI, find personalized rentals from electronics to
 						vehicles, fashion to party supplies.
 					</p>

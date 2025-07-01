@@ -1,7 +1,12 @@
 // Payment page route for /Payment
 'use client';
-import PaymentSection from '@/components/payment/PaymentSection';
+import { Suspense } from 'react';
+import PaymentSectionClient from '@/components/payment/PaymentSectionClient';
 
 export default function PaymentPage() {
-  return <PaymentSection />;
+  return (
+    <Suspense fallback={<div>Loading payment...</div>}>
+      <PaymentSectionClient />
+    </Suspense>
+  );
 }

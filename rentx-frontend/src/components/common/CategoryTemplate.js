@@ -253,7 +253,7 @@ export default function CategoryTemplate({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 12h.01M19 21H5a2 2 0 01-2-2V7a2 2 0 012-2h14a2 2 0 012 2v12a2 2 0 01-2 2z" />
               </svg>
               <h3 className="text-gray-700 font-medium text-lg mb-2">No items found</h3>
-              <p className="text-gray-500 mb-4">We couldn't find any {title.toLowerCase()} items available for rent.</p>
+              <p className="text-gray-500 mb-4">We couldn&apos;t find any {title.toLowerCase()} items available for rent.</p>
               <Link href="/add-product" className="bg-emerald-800 hover:bg-emerald-900 text-white px-6 py-2 rounded-md font-medium">
                 Add a Product
               </Link>

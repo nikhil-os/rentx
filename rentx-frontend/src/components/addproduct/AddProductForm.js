@@ -5,6 +5,7 @@ import { api, uploadFile } from '@/utils/api';
 import { useRouter } from 'next/navigation';
 import { auth, setupRecaptcha } from '@/utils/firebase';
 import { signInWithPhoneNumber } from 'firebase/auth';
+import Image from 'next/image';
 
 // Inline Toast Component
 function Toast({ message, onClose }) {
@@ -451,10 +452,12 @@ export default function AddProductForm() {
               />
               {imagePreview && (
                 <div className="mt-2">
-                  <img 
+                  <Image 
                     src={imagePreview} 
                     alt="Product preview" 
                     className="h-40 w-auto object-contain border rounded-md"
+                    width={200}
+                    height={160}
                   />
                 </div>
               )}
@@ -504,7 +507,7 @@ export default function AddProductForm() {
                 <li>You agree to respond to rental inquiries within 24 hours.</li>
                 <li>You will not discriminate against any potential renters.</li>
                 <li>You must disclose any defects or issues with the item.</li>
-                <li>You agree to the platform's commission structure.</li>
+                <li>You agree to the platforms commission structure.</li>
                 <li>You will comply with all applicable laws and regulations.</li>
                 <li>The platform is not responsible for any damages or disputes.</li>
                 <li>You can remove your listing at any time if not currently rented.</li>
