@@ -90,7 +90,7 @@ export default function BookingsList() {
                 <div className="flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-gray-100 border border-emerald-200 flex items-center justify-center">
                   {b.rental?.image && (
                     <Image
-                      src={b.rental.image.startsWith('http') ? b.rental.image : `${process.env.NEXT_PUBLIC_IMAGE_URL || 'https://rentx-nikhil-sahus-projects-0bc03434.vercel.app'}${b.rental.image}`}
+                      src={b.rental.image.startsWith('http') ? b.rental.image : `${process.env.NEXT_PUBLIC_IMAGE_URL}${b.rental.image}`}
                       alt={b.rental?.title}
                       className="object-cover w-full h-full"
                       width={64}
