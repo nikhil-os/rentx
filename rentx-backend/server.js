@@ -8,7 +8,11 @@ const cors = require('cors');
 const app = express();
 app.use(express.json());
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001'], // or your frontend port
+  origin: [
+    'http://localhost:3000', // local dev
+    'http://localhost:3001', // local dev
+    process.env.FRONTEND_URL // for production, set this in Vercel dashboard
+  ].filter(Boolean),
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
