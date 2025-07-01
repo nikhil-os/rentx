@@ -11,6 +11,7 @@ app.use(cors({
   origin: [
     'http://localhost:3000', // local dev
     'http://localhost:3001', // local dev
+    'https://rentx-frontend-ten.vercel.app', // production
     process.env.FRONTEND_URL // for production, set this in Vercel dashboard
   ].filter(Boolean),
   credentials: true,
