@@ -1,6 +1,6 @@
 // EventX page route for /EventX
 import EventXSection from "@/components/eventx/EventXSection";
-import ChatbotWidget from "@components/homepage/ChatbotWidget";
+// import ChatbotWidget from "@components/homepage/ChatbotWidget";
 
 export default function EventXPage() {
   return (
@@ -8,7 +8,7 @@ export default function EventXPage() {
       <div className="flex flex-col flex-1">
         <EventXSection />
       </div>
-      <ChatbotWidget />
+      {/* <ChatbotWidget /> */}
     </main>
   );
 }
