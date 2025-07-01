@@ -1,4 +1,5 @@
-'use client';
+"use client";
+
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { api } from '@/utils/api';
@@ -82,103 +83,103 @@ export default function HeroSection() {
 	const next = () => setCurrent((current + 1) % slides.length);
 
 	return (
-		<section className="relative overflow-hidden min-h-[65vh] bg-[#0A0F2C] text-white flex items-center justify-center px-6 py-12">
-			{/* Glowing Blobs */}
-			<div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-				<div className="absolute top-[10%] left-[5%] w-[220px] h-[220px] bg-[#FFD700] opacity-10 blur-2xl animate-pulse rounded-full" />
-				<div className="absolute bottom-[5%] right-[5%] w-[180px] h-[180px] bg-[#F0C9B7] opacity-10 blur-2xl animate-ping rounded-full" />
-			</div>
+  <section className="relative bg-[#0A0F2C] text-white py-12 overflow-hidden">
+    {/* Glowing Background Blob */}
+    <div className="absolute top-[-100px] left-[-100px] w-[400px] h-[400px] bg-[#FFD700] opacity-10 blur-3xl rounded-full pointer-events-none z-0" />
 
-			{/* Main Content */}
-			<div className="relative z-10 max-w-7xl w-full flex flex-col lg:flex-row items-start justify-between gap-0 px-0">
+    <div className="w-full px-6 lg:px-16 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 relative z-10">
 
-				{/* Left Text Content */}
-				<motion.div
-					initial={{ opacity: 0, x: -60 }}
-					animate={loaded ? { opacity: 1, x: 0 } : {}}
-					transition={{ duration: 1 }}
-					className="text-left lg:w-[48%] w-full px-2"
-				>
-					<h1 className="text-4xl md:text-5xl font-serif font-bold text-[#EAE7DC] leading-tight">
-						Rent Anything.<br />Anytime.<br />Anywhere.
-					</h1>
-					<p className="text-base md:text-lg text-[#D3D6DB] max-w-md leading-relaxed">
-						India’s smartest rental platform for gadgets, fashion, vehicles and more.
-					</p>
-					<div className="flex gap-4 mt-6">
-						<a
-							href="/category"
-							className="px-6 py-3 bg-[#F5E6C8] text-[#0A0F2C] rounded-md font-semibold text-base shadow hover:bg-white transition"
-						>
-							Start Renting
-						</a>
-						<a
-							href="/add-product"
-							className="px-6 py-3 border border-[#F5E6C8] text-[#F5E6C8] rounded-md text-base hover:bg-[#F5E6C8] hover:text-[#0A0F2C] transition"
-						>
-							List Your Item
-						</a>
-					</div>
-					{error && (
-						<div className="mt-4 p-3 bg-red-200/20 text-red-300 rounded-lg border border-red-300">
-							<p><strong>Error:</strong> {error}</p>
-							<p className="text-sm mt-1">Make sure backend is running at http://localhost:5000</p>
-						</div>
-					)}
-				</motion.div>
+      {/* Left Text Content */}
+      <motion.div
+        initial={{ opacity: 0, x: -50 }}
+        animate={loaded ? { opacity: 1, x: 0 } : {}}
+        transition={{ duration: 1 }}
+        className="text-left w-full lg:w-[48%]"
+      >
+        <span className="inline-block bg-[#F5E6C8] text-[#0A0F2C] px-3 py-1 text-xs rounded-full mb-3 font-medium">
+          Trusted by 10K+ renters
+        </span>
 
-				{/* Right Slider Content */}
-						<motion.div
-						initial={{ opacity: 0, x: 60 }}
-						animate={loaded ? { opacity: 1, x: 0 } : {}}
-						transition={{ duration: 1.2 }}
-						className="lg:w-[48%] w-full flex justify-end px-2"
-						>
+        <h1 className="text-4xl md:text-5xl font-bold text-[#F5E6C8] mb-6 font-serif leading-snug">
+          Rent Anything.<br /> Anytime.<br /> Anywhere.
+        </h1>
+        <p className="text-[#E1E1E1] mb-8 max-w-md text-lg">
+          India’s smartest rental platform for gadgets, fashion, vehicles and more.
+        </p>
+        <div className="flex gap-4">
+          <a
+            href="/category"
+            className="bg-[#F5E6C8] text-[#0A0F2C] px-6 py-3 rounded-full font-semibold shadow hover:bg-white transition flex items-center gap-2"
+          >
+            📦 Start Renting
+          </a>
+          <a
+            href="/add-product"
+            className="border border-[#F5E6C8] text-[#F5E6C8] px-6 py-3 rounded-full hover:bg-[#F5E6C8] hover:text-[#0A0F2C] transition flex items-center gap-2"
+          >
+            ➕ List Your Item
+          </a>
+        </div>
+        {error && (
+          <div className="mt-4 p-3 bg-red-200/20 text-red-300 rounded-lg border border-red-300">
+            <p><strong>Error:</strong> {error}</p>
+            <p className="text-sm mt-1">Make sure backend is running at http://localhost:5000</p>
+          </div>
+        )}
+      </motion.div>
 
-					<div className="relative w-full max-w-[420px] h-[520px] rounded-2xl overflow-hidden border border-[#F5E6C8] bg-[#1D2541] shadow-lg">
-						{loading ? (
-							<div className="absolute inset-0 flex items-center justify-center bg-gray-100/60">
-								<div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#FFD700]"></div>
-							</div>
-						) : (
-							slides.map((slide, idx) => (
-								<div
-									key={idx}
-									className={`absolute top-0 left-0 w-full h-full transition-opacity duration-700 ${idx === current ? "opacity-100 z-10" : "opacity-0 z-0"}`}
-								>
-									<Image
-										src={slide.image}
-										alt={slide.title}
-										fill
-										className="object-cover"
-										priority={idx === 0}
-									/>
-									<div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end rounded-b-xl">
-										<h3 className="text-lg font-semibold text-white">{slide.title}</h3>
-										<p className="text-sm text-white mb-1">{slide.subtitle}</p>
-										<a
-											href={slide.button.link}
-											className="inline-block px-4 py-2 mt-2 bg-[#FFD700] text-[#1A1A1A] rounded hover:bg-white transition text-sm"
-										>
-											{slide.button.text}
-										</a>
-									</div>
-								</div>
-							))
-						)}
-						{/* Dots */}
-						<div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-							{slides.map((_, idx) => (
-								<button
-									key={idx}
-									onClick={() => goTo(idx)}
-									className={`w-3 h-3 rounded-full ${idx === current ? "bg-[#FFD700]" : "bg-white/40"} border border-white`}
-								/>
-							))}
-						</div>
-					</div>
-				</motion.div>
-			</div>
-		</section>
-	);
+      {/* Right Image Slider */}
+      <motion.div
+        initial={{ opacity: 0, x: 50 }}
+        animate={loaded ? { opacity: 1, x: 0 } : {}}
+        transition={{ duration: 1.2 }}
+        className="w-full lg:w-[48%] flex justify-end"
+      >
+        <div className="relative w-full max-w-[420px] h-[480px] rounded-xl overflow-hidden border border-[#F5E6C8] bg-[#1D2541] shadow-lg">
+          {loading ? (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-100/60">
+              <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#FFD700]"></div>
+            </div>
+          ) : (
+            slides.map((slide, idx) => (
+              <div
+                key={idx}
+                className={`absolute top-0 left-0 w-full h-full transition-opacity duration-700 ${idx === current ? "opacity-100 z-10" : "opacity-0 z-0"}`}
+              >
+                <Image
+                  src={slide.image}
+                  alt={slide.title}
+                  fill
+                  className="object-cover transition-transform duration-500 hover:scale-105"
+                  priority={idx === 0}
+                />
+                <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end rounded-b-2xl">
+                  <h3 className="text-xl font-bold text-white">{slide.title}</h3>
+                  <p className="text-sm text-white mb-2">{slide.subtitle}</p>
+                  <a
+                    href={slide.button.link}
+                    className="inline-block px-4 py-2 mt-2 bg-[#FFD700] text-[#1A1A1A] rounded hover:bg-white transition"
+                  >
+                    {slide.button.text}
+                  </a>
+                </div>
+              </div>
+            ))
+          )}
+          <button onClick={prev} className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#1B3C34] rounded-full w-9 h-9 flex items-center justify-center z-20">&#8249;</button>
+          <button onClick={next} className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#1B3C34] rounded-full w-9 h-9 flex items-center justify-center z-20">&#8250;</button>
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+            {slides.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => goTo(idx)}
+                className={`w-3 h-3 rounded-full ${idx === current ? "bg-[#FFD700]" : "bg-white/40"} border border-white`}
+              />
+            ))}
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  </section>
+);
 }
