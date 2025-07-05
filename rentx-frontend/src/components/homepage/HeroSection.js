@@ -29,10 +29,13 @@ export default function HeroSection() {
 				console.log('Fetching products from API...');
 				const data = await api.get("/rentals");
 				console.log('Products received:', data);
-				
+
+				// Ensure data is always an array
+				const rentalsArray = Array.isArray(data) ? data : [];
+
 				const allProducts = [];
 				for (const category of categorySlugs) {
-					const filtered = data.filter(
+					const filtered = rentalsArray.filter(
 						(item) =>
 							(item.category || item.Category || "").toLowerCase().trim() === category
 					);
