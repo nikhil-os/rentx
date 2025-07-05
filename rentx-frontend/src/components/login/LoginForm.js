@@ -25,7 +25,7 @@ export default function LoginForm() {
     setLoading(true);
 
     try {
-      const response = await api.post('/auth/login', form);
+      const response = await api.post('/api/auth/login', form);
       if (response && response.token) {
         if (typeof window !== 'undefined') {
           localStorage.setItem('token', response.token);

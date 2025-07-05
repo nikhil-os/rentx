@@ -267,12 +267,12 @@ export default function SignupForm() {
     try {
       setLoading(true);
       // Register the user
-      await api.post('/auth/signup', { name, phone, email, password, location });
+      await api.post('/api/auth/signup', { name, phone, email, password, location });
       setSuccess(true);
       
       // Now automatically log in the user
       try {
-        const loginResponse = await api.post('/auth/login', { email, password });
+        const loginResponse = await api.post('/api/auth/login', { email, password });
         
         // Store the token and user data in localStorage
         localStorage.setItem('token', loginResponse.token);
