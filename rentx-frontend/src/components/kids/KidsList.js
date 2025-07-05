@@ -17,7 +17,9 @@ export default function KidsList() {
       setError("");
       try {
         const data = await api.get("/rentals");
-        setKidsItems(data.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "kids"));
+        // Ensure data is always an array
+        const rentalsArray = Array.isArray(data) ? data : [];
+        setKidsItems(rentalsArray.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "kids"));
       } catch (err) {
         setError(typeof err === "string" ? err : (err.message || "Failed to load kids items."));
       }

@@ -17,7 +17,9 @@ export default function DecorList() {
       setError("");
       try {
         const data = await api.get("/rentals");
-        setDecorItems(data.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "decor"));
+        // Ensure data is always an array
+        const rentalsArray = Array.isArray(data) ? data : [];
+        setDecorItems(rentalsArray.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "decor"));
       } catch (err) {
         setError(typeof err === "string" ? err : (err.message || "Failed to load decor items."));
       }

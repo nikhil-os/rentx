@@ -17,7 +17,9 @@ export default function FemaleFashionList() {
       setError("");
       try {
         const data = await api.get("/rentals");
-        setFemaleItems(data.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "female"));
+        // Ensure data is always an array
+        const rentalsArray = Array.isArray(data) ? data : [];
+        setFemaleItems(rentalsArray.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "female"));
       } catch (err) {
         setError(typeof err === "string" ? err : (err.message || "Failed to load female fashion items."));
       }

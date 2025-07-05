@@ -17,7 +17,9 @@ export default function SportsList() {
       setError("");
       try {
         const data = await api.get("/rentals");
-        setSportsItems(data.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "sports"));
+        // Ensure data is always an array
+        const rentalsArray = Array.isArray(data) ? data : [];
+        setSportsItems(rentalsArray.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "sports"));
       } catch (err) {
         setError(typeof err === "string" ? err : (err.message || "Failed to load sports items."));
       }
