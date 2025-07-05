@@ -39,6 +39,7 @@ export default function SignupForm() {
   const [locationError, setLocationError] = useState('');
   const [emailChecking, setEmailChecking] = useState(false);
   const [emailError, setEmailError] = useState('');
+  const [toast, setToast] = useState({ show: false, message: '', type: 'error' });
 
   const router = useRouter();
 
@@ -241,60 +242,48 @@ export default function SignupForm() {
     e.preventDefault();
 
     if (!otpVerified) {
-      setError('Please verify your phone number before signing up.');
+      setToast({ show: true, message: 'Please verify your phone number before signing up.', type: 'error' });
       return;
     }
 
     const { name, email, phone, password, confirm, location } = form;
 
     if (!name || !phone || !email.includes('@') || !password || password.length < 6) {
-      setError('Please fill all fields correctly.');
+      setToast({ show: true, message: 'All fields are required and password must be at least 6 characters.', type: 'error' });
       return;
     }
 
     if (password !== confirm) {
-      setError('Passwords do not match.');
+      setToast({ show: true, message: 'Password and confirm password do not match.', type: 'error' });
       return;
     }
 
     // Check if email exists before submitting
     const emailExists = await checkEmailExists(email);
     if (emailExists) {
-      setError('This email address is already registered. Please use a different email or try logging in.');
+      setToast({ show: true, message: 'This email address is already registered. Please use a different email or try logging in.', type: 'error' });
       return;
     }
 
     try {
       setLoading(true);
-      // Register the user
-      await api.post('/api/auth/signup', { name, phone, email, password, location });
+      // Register the user (send confirmPassword)
+      await api.post('/api/auth/signup', { name, phone, email, password, confirmPassword: confirm, location });
       setSuccess(true);
-      
+      setToast({ show: true, message: 'Signup successful! Logging you in...', type: 'success' });
       // Now automatically log in the user
       try {
         const loginResponse = await api.post('/api/auth/login', { email, password });
-        
-        // Store the token and user data in localStorage
         localStorage.setItem('token', loginResponse.token);
         localStorage.setItem('user', JSON.stringify(loginResponse.user));
-        
-        // Dispatch a custom event to notify other components about login
         window.dispatchEvent(new Event('loginStatusChanged'));
-        
-        // Redirect to home page
         router.push('/');
       } catch (loginError) {
-        console.error('Auto-login failed:', loginError);
-        // If auto-login fails, still redirect to login page
+        setToast({ show: true, message: 'Signup succeeded but auto-login failed. Please login manually.', type: 'error' });
         setTimeout(() => router.push('/login'), 1500);
       }
     } catch (err) {
-      // Check for specific error messages from the API
-      if (err.message && err.message.includes('Email already in use')) {
-        setError('This email address is already registered. Please use a different email or try logging in.');
-      } else {
-        setError(err.message || 'Signup failed. Please try again.');
-      }
+      setToast({ show: true, message: err.message || 'Signup failed. Please try again.', type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -566,6 +555,10 @@ export default function SignupForm() {
           message="Please enter a valid test phone number ending with ******9280"
           onClose={() => setShowToast(false)}
         />
+      )}
+
+      {toast.show && (
+        <Toast message={toast.message} onClose={() => setToast({ ...toast, show: false })} />
       )}
     </div>
   );
