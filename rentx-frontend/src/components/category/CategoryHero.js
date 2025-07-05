@@ -22,7 +22,10 @@ const fadeFromRight = {
 
 export default function CategoryHero() {
   return (
-    <section className="relative min-h-screen flex flex-col justify-end text-white bg-gradient-to-br from-[#0A0F2C] via-black to-[#0A0F2C] overflow-hidden">
+    <section className="relative bg-[#0A0F2C] text-white min-h-screen py-12 overflow-hidden flex flex-col justify-end">
+      {/* 🌟 Glowing Orb Background (same as home hero) */}
+      <div className="absolute top-[-100px] left-[-100px] w-[400px] h-[400px] bg-[#FFD700] opacity-10 blur-3xl rounded-full pointer-events-none z-0" />
+
       {/* Soft Background Image */}
       <div className="absolute inset-0 -z-10 opacity-10">
         <Image
@@ -34,10 +37,10 @@ export default function CategoryHero() {
         />
       </div>
 
-      {/* Gradient fade at bottom to blend into next section */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-b from-transparent to-[#0A0F2C] z-0" />
+      {/* Divider at Bottom (same as home) */}
+      <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#F5E6C8]/30 to-transparent z-10" />
 
-      <div className="container mx-auto px-4 pb-12">
+      <div className="container mx-auto px-4 pb-12 z-10">
         {/* 🔍 Search Bar at Top */}
         <motion.div
           className="mb-12 bg-[#14213D]/70 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-lg flex flex-col md:flex-row items-center gap-4"

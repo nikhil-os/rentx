@@ -1,16 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion } from "framer-motion";
 
-const cardVariants = {
+const fadeUp = {
   hidden: { opacity: 0, y: 50 },
   visible: (i) => ({
     opacity: 1,
     y: 0,
     transition: {
-      delay: i * 0.15,
+      delay: i * 0.2,
       duration: 0.6,
       ease: "easeOut",
     },
@@ -18,9 +17,6 @@ const cardVariants = {
 };
 
 export default function AICategories() {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: false, amount: 0.2 });
-
   const categories = [
     {
       title: "Fashion",
@@ -57,15 +53,14 @@ export default function AICategories() {
   ];
 
   return (
-    <section
-      ref={ref}
-      className="min-h-screen py-20 bg-gradient-to-b from-[#0A0F2C] via-black to-[#0A0F2C] text-white relative z-10"
-    >
-      <div className="max-w-7xl mx-auto px-4">
+    <section className="min-h-screen bg-gradient-to-b from-[#0A0F2C] via-black to-[#0A0F2C] text-white flex flex-col justify-between">
+      <div className="max-w-7xl mx-auto px-4 w-full pt-45 pb-35">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.3 }}
+          variants={fadeUp}
+          custom={0}
           className="text-center mb-14"
         >
           <h2 className="text-4xl md:text-5xl font-bold font-serif text-[#F5E6C8] mb-3">
@@ -80,18 +75,19 @@ export default function AICategories() {
           {categories.map((cat, i) => (
             <motion.div
               key={i}
-              custom={i}
-              variants={cardVariants}
+              variants={fadeUp}
               initial="hidden"
-              animate={inView ? "visible" : "hidden"}
-              className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-300 flex flex-col"
+              whileInView="visible"
+              viewport={{ once: false, amount: 0.3 }}
+              custom={i}
+              className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 hover:-translate-y-1 transition-all duration-300 shadow-lg flex flex-col"
             >
               <Image
                 src={cat.image}
                 alt={cat.title}
                 width={400}
                 height={160}
-                className="rounded-xl mb-4 object-cover h-40 w-full"
+                className="rounded-xl mb-3 object-cover h-40 w-full"
               />
               <h5 className="text-xl font-semibold text-[#F5E6C8] mb-1">{cat.title}</h5>
               <p className="text-gray-300 text-sm mb-4">{cat.desc}</p>

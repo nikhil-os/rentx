@@ -2,7 +2,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import SectionDivider from "@/components/ui/SectionDivider";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 50 },
@@ -87,8 +86,6 @@ export default function CategoryList() {
       <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0A0F2C] to-transparent z-0" />
 
       <div className="max-w-7xl mx-auto px-4 w-full relative z-10">
-        <SectionDivider />
-
         {/* Heading */}
         <motion.div
           initial="hidden"
