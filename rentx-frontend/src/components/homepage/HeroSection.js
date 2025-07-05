@@ -144,7 +144,7 @@ export default function HeroSection() {
 					{error && (
 						<div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg">
 							<p><strong>Error:</strong> {error}</p>
-							<p className="text-sm mt-1">Make sure the backend server is running at http://localhost:5000</p>
+							<p className="text-sm mt-1">Make sure the backend server is running at <a href="https://rentx-backend.onrender.com" target="_blank" rel="noopener noreferrer">https://rentx-backend.onrender.com</a></p>
 						</div>
 					)}
 				</div>

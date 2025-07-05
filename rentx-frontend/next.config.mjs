@@ -8,6 +8,7 @@ const nextConfig = {
     domains: [
       'localhost',
       '127.0.0.1',
+      'rentx-backend.onrender.com',
       'images.unsplash.com',
       'img.freepik.com',
       'm.media-amazon.com',
