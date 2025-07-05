@@ -20,8 +20,9 @@
 }
 
 body {
-  @apply bg-[#0A0F2C] text-white;
+  @apply bg-gradient-to-b from-[#0A0F2C] via-black to-[#0A0F2C] text-white;
 }
+
 
 
 html {
