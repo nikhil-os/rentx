@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { api } from '@/utils/api';
 import { useRouter } from 'next/navigation';
-import Toast from '@/components/Toast'; // Adjust the import based on your project structure
+import Toast from '../common/Toast';
 
 export default function LoginForm() {
   const [form, setForm] = useState({ email: '', password: '' });

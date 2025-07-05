@@ -7,21 +7,7 @@ import { api } from '@/utils/api';
 import { auth, setupRecaptcha } from '@/utils/firebase';
 import { signInWithPhoneNumber } from 'firebase/auth';
 import Image from 'next/image';
-
-// Toast Component
-function Toast({ message, onClose }) {
-  useEffect(() => {
-    const timer = setTimeout(() => onClose(), 5000);
-    return () => clearTimeout(timer);
-  }, [onClose]);
-
-  return (
-    <div className="fixed top-6 right-6 bg-red-500 text-white px-6 py-4 rounded-xl shadow-lg flex items-center justify-between gap-4 z-50 animate-fadeIn">
-      <span>{message}</span>
-      <button onClick={onClose} className="text-white font-bold text-lg">×</button>
-    </div>
-  );
-}
+import Toast from '../common/Toast';
 
 export default function SignupForm() {
   const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '', phone: '', location: '' });
