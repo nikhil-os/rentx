@@ -24,7 +24,7 @@ export async function POST(request) {
     console.log(`Calling backend API: ${API_BASE_URL}/auth/check-email-exists`);
     
     try {
-      const res = await fetch(`${API_BASE_URL}/auth/check-email-exists`, {
+      const res = await (`${API_BASE_URL}/auth/check-email-exists`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -63,8 +63,8 @@ export async function POST(request) {
       }
 
       return NextResponse.json(data, { status: 200 });
-    } catch (fetchError) {
-      console.error('Fetch error:', fetchError);
+    } catch (Error) {
+      console.error(' error:', Error);
       // If the backend is down or unreachable, assume email doesn't exist
       return NextResponse.json(
         { exists: false },
