@@ -21,8 +21,8 @@ export default function Footer() {
               <li><Link href="/" className="hover:text-[#D4A017]">Home</Link></li>
               <li><Link href="/about" className="hover:text-[#D4A017]">About Us</Link></li>
               <li><Link href="/category" className="hover:text-[#D4A017]">Categories</Link></li>
-              <li><Link href="/how-it-works" className="hover:text-[#D4A017]">How It Works</Link></li>
-              <li><Link href="/blog" className="hover:text-[#D4A017]">Blog</Link></li>
+              <li><Link href="/" className="hover:text-[#D4A017]">How It Works</Link></li>
+              <li><Link href="/" className="hover:text-[#D4A017]">Blog</Link></li>
             </ul>
           </div>
           <div>
@@ -31,8 +31,8 @@ export default function Footer() {
               <li><Link href="/electronics" className="hover:text-[#D4A017]">Electronics</Link></li>
               <li><Link href="/vehicles" className="hover:text-[#D4A017]">Vehicles</Link></li>
               <li><Link href="/furniture" className="hover:text-[#D4A017]">Furniture</Link></li>
-              <li><Link href="/tools" className="hover:text-[#D4A017]">Tools</Link></li>
-              <li><Link href="/party-supplies" className="hover:text-[#D4A017]">Party Supplies</Link></li>
+              <li><Link href="/" className="hover:text-[#D4A017]">Tools</Link></li>
+              <li><Link href="/" className="hover:text-[#D4A017]">Party Supplies</Link></li>
             </ul>
           </div>
           <div>
