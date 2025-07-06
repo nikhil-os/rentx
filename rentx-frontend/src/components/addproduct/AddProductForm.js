@@ -156,7 +156,7 @@ export default function AddProductForm() {
     let imageUrl = form.image;
     try {
       if (imageFile) {
-        const uploadRes = await uploadFile('/upload', imageFile, 'file');
+        const uploadRes = await uploadFile('/api/upload', imageFile, 'file');
         imageUrl = uploadRes.url;
       }
       await api.post('/rentals', {
