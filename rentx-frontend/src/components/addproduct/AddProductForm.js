@@ -159,7 +159,7 @@ export default function AddProductForm() {
         const uploadRes = await uploadFile('/api/upload', imageFile, 'file');
         imageUrl = uploadRes.url;
       }
-      await api.post('/rentals', {
+      await api.post('/api/rentals', {
         title: form.name,
         category: form.category.toLowerCase().trim(),
         description: form.description || '',
