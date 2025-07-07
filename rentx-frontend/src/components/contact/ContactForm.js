@@ -26,7 +26,7 @@ export default function ContactForm() {
     <div className="bg-white rounded-xl shadow-lg p-8">
       <h2 className="text-2xl font-bold mb-6 text-gray-900 font-serif">Send Us a Message</h2>
       {submitted && (
-        <div className="mb-4 p-3 bg-green-100 text-green-800 rounded">Thank you! Your message has been sent. We'll get back to you soon.</div>
+        <div className="mb-4 p-3 bg-green-100 text-green-800 rounded">Thank you! Your message has been sent. We will get back to you soon.</div>
       )}
       <form onSubmit={handleSubmit}>
         <div className="mb-4">

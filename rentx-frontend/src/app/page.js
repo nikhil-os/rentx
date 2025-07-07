@@ -62,7 +62,7 @@ export default function Home() {
       <FeaturedItems />
       <HowItWorks />
       <CallToAction />
-      <ChatbotWidget />
+      {/* <ChatbotWidget /> */}
     </main>
   );
 }

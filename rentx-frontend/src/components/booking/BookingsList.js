@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '@/utils/api';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image'; // Make sure this is at the top
 
 export default function BookingsList() {
   const [bookings, setBookings] = useState([]);
@@ -88,8 +89,14 @@ export default function BookingsList() {
               <div className="flex items-center gap-4 mb-2">
                 <div className="flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-gray-100 border border-emerald-200 flex items-center justify-center">
                   {b.rental?.image && (
-                    <img src={b.rental.image.startsWith('http') ? b.rental.image : `http://localhost:5000${b.rental.image}`} alt={b.rental?.title} className="object-cover w-full h-full" />
-                  )}
+<Image
+  src={b.rental.image.startsWith('http') ? b.rental.image : `http://localhost:5000${b.rental.image}`}
+  alt={b.rental?.title || 'Rental image'}
+  className="object-cover w-full h-full"
+  width={500} // You can customize this width
+  height={300} // You can customize this height
+  unoptimized // Optional: remove this if you have remote image domains set in next.config.js
+/>                  )}
                 </div>
                 <div>
                   <div className="text-xl font-bold text-emerald-900 mb-1 tracking-wide drop-shadow-sm">

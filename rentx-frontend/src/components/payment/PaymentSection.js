@@ -274,7 +274,7 @@ export default function PaymentSection() {
                 <p className="text-sm text-emerald-800 mb-2 font-semibold">Test Payment Information:</p>
                 <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
                   <li>Use any phone number for testing</li>
-                  <li>Use UPI option and select "Success" for test payment</li>
+                  <li>Use UPI option and select Success for test payment</li>
                   <li>No actual payment will be processed</li>
                 </ul>
               </div>

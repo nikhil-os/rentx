@@ -10,7 +10,7 @@ export default function AboutPage() {
       <div className="flex flex-col flex-1">
         <AboutSection />
       </div>
-      <ChatbotWidget />
+      {/* <ChatbotWidget /> */}
     </main>
   );
 }

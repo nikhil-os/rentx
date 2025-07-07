@@ -8,7 +8,7 @@ export default function EventXPage() {
       <div className="flex flex-col flex-1">
         <EventXSection />
       </div>
-      <ChatbotWidget />
+      {/* <ChatbotWidget /> */}
     </main>
   );
 }

@@ -10,7 +10,7 @@ export default function DeliveryOptionsSection() {
           <ul className="space-y-6">
             <li>
               <h3 className="text-xl font-semibold mb-1">Self Pickup</h3>
-              <p className="text-gray-600">Pick up your item directly from the owner's location at a scheduled time. No extra charges apply.</p>
+              <p className="text-gray-600">Pick up your item directly from the owners location at a scheduled time. No extra charges apply.</p>
             </li>
             <li>
               <h3 className="text-xl font-semibold mb-1">Home Delivery</h3>

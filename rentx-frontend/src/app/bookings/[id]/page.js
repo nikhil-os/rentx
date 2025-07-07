@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { api } from "@/utils/api";
+import Image from 'next/image'; // Make sure this import is at the top
 import { FaUser, FaPhone, FaEnvelope, FaMapMarkerAlt, FaRegClock, FaTruck, FaCommentDots, FaCalendarAlt, FaRupeeSign, FaCheckCircle, FaTimesCircle, FaLocationArrow } from "react-icons/fa";
 
 export default function BookingDetailsPage() {
@@ -80,8 +81,13 @@ export default function BookingDetailsPage() {
         <div className="flex flex-col md:flex-row gap-8 mb-8">
           <div className="flex-shrink-0 w-40 h-40 rounded-2xl overflow-hidden bg-gray-100 border border-emerald-200 flex items-center justify-center mx-auto md:mx-0">
             {booking.rental?.image && (
-              <img src={booking.rental.image.startsWith('http') ? booking.rental.image : `http://localhost:5000${booking.rental.image}`} alt={booking.rental?.title} className="object-cover w-full h-full" />
-            )}
+<Image
+  src={booking.rental.image.startsWith('http') ? booking.rental.image : `http://localhost:5000${booking.rental.image}`}
+  alt={booking.rental?.title}
+  className="object-cover w-full h-full"
+  width={500}
+  height={300}
+/>            )}
           </div>
           <div className="flex-1 flex flex-col gap-2 justify-center">
             <div className="text-2xl font-bold text-emerald-900 flex items-center gap-2"><FaUser className="text-emerald-600" /> {booking.name}</div>
