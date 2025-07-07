@@ -7,15 +7,12 @@ const cors = require('cors');
 
 const app = express();
 app.use(express.json());
-
-const allowedOrigins = ['https://rentx-frontend-ten.vercel.app' || 'https://rentx-phi.vercel.app/'];
-
 app.use(cors({
-  origin: allowedOrigins,
+  origin: ['http://localhost:3000', 'http://localhost:3001'], // or your frontend port
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
-app.options('*', cors()); // Handle preflight for all routes
-
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
 

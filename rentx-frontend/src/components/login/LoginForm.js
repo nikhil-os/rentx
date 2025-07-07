@@ -3,13 +3,11 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { api } from '@/utils/api';
 import { useRouter } from 'next/navigation';
-import Toast from '../common/Toast';
 
 export default function LoginForm() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [toast, setToast] = useState({ show: false, message: '', type: 'error' });
   const router = useRouter();
 
   function handleChange(e) {
@@ -19,28 +17,31 @@ export default function LoginForm() {
   async function handleSubmit(e) {
     e.preventDefault();
     if (!form.email.includes('@') || !form.password) {
-      setToast({ show: true, message: 'Email and password are required.', type: 'error' });
+      setError('Please enter a valid email and password.');
       return;
     }
+
     setError('');
     setLoading(true);
 
     try {
-      const response = await api.post('/api/auth/login', form);
+      const response = await api.post('/auth/login', form);
       if (response && response.token) {
         if (typeof window !== 'undefined') {
           localStorage.setItem('token', response.token);
           localStorage.setItem('user', JSON.stringify(response.user));
+          
+          // Dispatch a custom event to notify other components about login
           window.dispatchEvent(new Event('loginStatusChanged'));
         }
         setForm({ email: '', password: '' });
-        setToast({ show: true, message: 'Login successful!', type: 'success' });
-        setTimeout(() => router.push('/'), 1000);
+        router.push('/');
       } else {
         throw new Error('Invalid response from server');
       }
     } catch (err) {
-      setToast({ show: true, message: err.message || 'Login failed. Please check your credentials.', type: 'error' });
+      console.error('Login error:', err);
+      setError(typeof err === 'string' ? err : (err.message || 'Login failed. Please check your credentials.'));
     } finally {
       setLoading(false);
     }
@@ -95,7 +96,7 @@ export default function LoginForm() {
       </form>
 
       <div className="mt-4 text-center text-sm text-gray-600">
-        Don&apos;t have an account?{' '}
+        Don't have an account?{' '}
         <Link href="/signup" className="text-[#1B3C34] font-semibold hover:underline">
           Register
         </Link>
@@ -110,10 +111,6 @@ export default function LoginForm() {
           </Link>
         </div>
       </div>
-
-      {toast.show && (
-        <Toast message={toast.message} onClose={() => setToast({ ...toast, show: false })} />
-      )}
     </div>
   );
 }

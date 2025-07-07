@@ -20,11 +20,12 @@ export async function POST(request) {
       return NextResponse.json({ exists: true }, { status: 200 });
     }
 
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+    // Call the backend API directly instead of using the api utility
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
     console.log(`Calling backend API: ${API_BASE_URL}/auth/check-email-exists`);
     
     try {
-      const res = await (`${API_BASE_URL}/auth/check-email-exists`, {
+      const res = await fetch(`${API_BASE_URL}/auth/check-email-exists`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -63,8 +64,8 @@ export async function POST(request) {
       }
 
       return NextResponse.json(data, { status: 200 });
-    } catch (Error) {
-      console.error(' error:', Error);
+    } catch (fetchError) {
+      console.error('Fetch error:', fetchError);
       // If the backend is down or unreachable, assume email doesn't exist
       return NextResponse.json(
         { exists: false },
@@ -79,4 +80,4 @@ export async function POST(request) {
       { status: 500 }
     );
   }
-}
+} 

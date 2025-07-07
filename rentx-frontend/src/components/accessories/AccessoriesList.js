@@ -16,10 +16,8 @@ export default function AccessoriesList() {
       setLoading(true);
       setError("");
       try {
-        const data = await api.get("/api/rentals");
-        // Ensure data is always an array
-        const rentalsArray = Array.isArray(data) ? data : [];
-        setAccessoriesItems(rentalsArray.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "accessories"));
+        const data = await api.get("/rentals");
+        setAccessoriesItems(data.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "accessories"));
       } catch (err) {
         setError(typeof err === "string" ? err : (err.message || "Failed to load accessories items."));
       }

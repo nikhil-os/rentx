@@ -267,14 +267,14 @@ export default function PaymentSection() {
               
               <div className="bg-amber-50 border border-amber-200 p-4 rounded-lg mb-4">
                 <p className="text-amber-700 font-medium">⚠️ Test Mode</p>
-                <p className="text-sm text-amber-700">For testing purposes, you will be charged &quot;₹1&quot; instead of the actual amount.</p>
+                <p className="text-sm text-amber-700">For testing purposes, you will be charged ₹1 instead of the actual amount.</p>
               </div>
               
               <div className="bg-emerald-50 p-4 rounded-lg mb-6">
                 <p className="text-sm text-emerald-800 mb-2 font-semibold">Test Payment Information:</p>
                 <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
                   <li>Use any phone number for testing</li>
-                  <li>Use UPI option and select &quot;Success&quot; for test payment</li>
+                  <li>Use UPI option and select "Success" for test payment</li>
                   <li>No actual payment will be processed</li>
                 </ul>
               </div>

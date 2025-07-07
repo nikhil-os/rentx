@@ -17,10 +17,8 @@ export default function FurnitureList() {
       setLoading(true);
       setError("");
       try {
-        const data = await api.get("/api/rentals");
-        // Ensure data is always an array
-        const rentalsArray = Array.isArray(data) ? data : [];
-        setFurnitureItems(rentalsArray.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "furniture"));
+        const data = await api.get("/rentals");
+        setFurnitureItems(data.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "furniture"));
       } catch (err) {
         setError(typeof err === "string" ? err : (err.message || "Failed to load furniture items."));
       }

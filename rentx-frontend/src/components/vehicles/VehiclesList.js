@@ -16,12 +16,10 @@ export default function VehiclesList() {
       setLoading(true);
       setError("");
       try {
-        const data = await api.get("/api/rentals");
+        const data = await api.get("/rentals");
         console.log("All rentals:", data);
 
-        // Ensure data is always an array
-        const rentalsArray = Array.isArray(data) ? data : [];
-        setVehicles(rentalsArray.filter(item => (item.category || item.Category || "").toLowerCase() === "vehicles"));
+        setVehicles(data.filter(item => (item.category || item.Category || "").toLowerCase() === "vehicles"));
       } catch (err) {
         setError(typeof err === "string" ? err : (err.message || "Failed to load vehicles."));
       }

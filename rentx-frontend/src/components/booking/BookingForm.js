@@ -157,7 +157,7 @@ export default function BookingForm({ rentalId }) {
       return;
     }
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookings`, {
+      await fetch('http://localhost:5000/api/bookings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

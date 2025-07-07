@@ -320,7 +320,7 @@ export default function ProfileSection() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     <h3 className="mt-2 text-sm font-medium text-gray-900">No bookings</h3>
-                    <p className="mt-1 text-sm text-gray-500">You haven&apos;t made any bookings yet.</p>
+                    <p className="mt-1 text-sm text-gray-500">You haven't made any bookings yet.</p>
                     <div className="mt-6">
                       <Link 
                         href="/category" 
@@ -366,7 +366,7 @@ export default function ProfileSection() {
                                       <div className="flex items-center">
                                         <div className="h-10 w-10 flex-shrink-0 relative">
                                           <Image
-                                            src={booking.rental?.image && !booking.rental.image.startsWith('http') ? `${process.env.NEXT_PUBLIC_IMAGE_URL}${booking.rental.image}` : (booking.rental?.image || '/ref1.png')}
+                                            src={booking.rental?.image && !booking.rental.image.startsWith('http') ? `http://localhost:5000${booking.rental.image}` : (booking.rental?.image || '/ref1.png')}
                                             alt={booking.rental?.name || booking.rental?.title || "Rental item"}
                                             fill
                                             className="rounded-md object-cover"
@@ -440,7 +440,7 @@ export default function ProfileSection() {
                                       <div className="flex items-center">
                                         <div className="h-10 w-10 flex-shrink-0 relative">
                                           <Image
-                                            src={booking.rental?.image && !booking.rental.image.startsWith('http') ? `${process.env.NEXT_PUBLIC_IMAGE_URL}${booking.rental.image}` : (booking.rental?.image || '/ref1.png')}
+                                            src={booking.rental?.image && !booking.rental.image.startsWith('http') ? `http://localhost:5000${booking.rental.image}` : (booking.rental?.image || '/ref1.png')}
                                             alt={booking.rental?.name || booking.rental?.title || "Rental item"}
                                             fill
                                             className="rounded-md object-cover"
@@ -523,4 +523,4 @@ export default function ProfileSection() {
       </div>
     </div>
   );
-}
+} 

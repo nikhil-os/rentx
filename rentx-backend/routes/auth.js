@@ -32,7 +32,11 @@ router.post('/register', async (req, res) => {
 
     res.status(201).json({ message: 'User registered successfully' });
   } catch (err) {
-    console.error(err);
+    console.error('Registration error:', err);
+    // Return detailed error in development only
+    if (process.env.NODE_ENV === 'development') {
+      return res.status(500).json({ message: 'Server error', error: err.message, stack: err.stack });
+    }
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -61,7 +65,11 @@ router.post('/signup', async (req, res) => {
 
     res.status(201).json({ message: 'User registered successfully' });
   } catch (err) {
-    console.error(err);
+    console.error('Signup error:', err);
+    // Return detailed error in development only
+    if (process.env.NODE_ENV === 'development') {
+      return res.status(500).json({ message: 'Server error', error: err.message, stack: err.stack });
+    }
     res.status(500).json({ message: 'Server error' });
   }
 });

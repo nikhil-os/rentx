@@ -4,7 +4,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '@/utils/api';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 
 export default function BookingsList() {
   const [bookings, setBookings] = useState([]);
@@ -89,13 +88,7 @@ export default function BookingsList() {
               <div className="flex items-center gap-4 mb-2">
                 <div className="flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-gray-100 border border-emerald-200 flex items-center justify-center">
                   {b.rental?.image && (
-                    <Image
-                      src={b.rental.image.startsWith('http') ? b.rental.image : `${process.env.NEXT_PUBLIC_IMAGE_URL}${b.rental.image}`}
-                      alt={b.rental?.title}
-                      className="object-cover w-full h-full"
-                      width={64}
-                      height={64}
-                    />
+                    <img src={b.rental.image.startsWith('http') ? b.rental.image : `http://localhost:5000${b.rental.image}`} alt={b.rental?.title} className="object-cover w-full h-full" />
                   )}
                 </div>
                 <div>

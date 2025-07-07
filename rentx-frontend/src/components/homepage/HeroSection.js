@@ -1,238 +1,184 @@
-import Image from "next/image";
-import { useState, useEffect } from "react";
-import { api } from "@/utils/api";
+"use client";
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { api } from '@/utils/api';
+import { motion } from 'framer-motion';
 
 const categorySlugs = [
-	"vehicles",
-	"kids",
-	"furniture",
-	"fashion",
-	"decor",
-	"electronics",
-	"accessories",
-	"sports",
-	"female",
-	"male",
+  "vehicles", "kids", "furniture", "fashion",
+  "decor", "electronics", "accessories", "sports",
+  "female", "male"
 ];
 
 export default function HeroSection() {
-	const [slides, setSlides] = useState([]);
-	const [current, setCurrent] = useState(0);
-	const [error, setError] = useState(null);
-	const [loading, setLoading] = useState(true);
+  const [slides, setSlides] = useState([]);
+  const [current, setCurrent] = useState(0);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [loaded, setLoaded] = useState(false);
 
-	useEffect(() => {
-		async function fetchSlides() {
-			try {
-				setLoading(true);
-				setError(null);
-				console.log('Fetching products from API...');
-				const data = await api.get("/rentals");
-				console.log('Products received:', data);
+  useEffect(() => {
+    const timer = setTimeout(() => setLoaded(true), 200);
+    return () => clearTimeout(timer);
+  }, []);
 
-				// Ensure data is always an array
-				const rentalsArray = Array.isArray(data) ? data : [];
+  useEffect(() => {
+    async function fetchSlides() {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await api.get("/rentals");
+        const allProducts = [];
+        for (const category of categorySlugs) {
+          const filtered = data.filter(
+            (item) =>
+              (item.category || item.Category || "").toLowerCase().trim() === category
+          );
+          allProducts.push(...filtered);
+        }
+        const mapped = allProducts.map((item) => ({
+          image:
+            item.image && !item.image.startsWith("http")
+              ? `http://localhost:5000${item.image}`
+              : item.image || item.img || "/ref1.png",
+          title: item.name || item.title || "Product",
+          subtitle: item.price ? `₹${item.price}/day` : item.category || "",
+          button: { text: "Rent Now", link: `/booking?rentalId=${item._id}` },
+        }));
+        setSlides(
+          mapped.length
+            ? mapped
+            : [getFallbackSlide("No products found", "Please check back later.")]
+        );
+      } catch (e) {
+        setError(e.message || 'Failed to fetch products');
+        setSlides([
+          getFallbackSlide("Connection Error", "Could not connect to the server.")
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchSlides();
+  }, []);
 
-				const allProducts = [];
-				for (const category of categorySlugs) {
-					const filtered = rentalsArray.filter(
-						(item) =>
-							(item.category || item.Category || "").toLowerCase().trim() === category
-					);
-					allProducts.push(...filtered);
-				}
-				const mapped = allProducts.map((item) => ({
-					image:
-						item.image && !item.image.startsWith("http")
-							? `${process.env.NEXT_PUBLIC_IMAGE_URL}${item.image}`
-							: item.image || item.img || "/ref1.png",
-					title: item.name || item.title || "Product",
-					subtitle: item.price ? `₹${item.price}/day` : item.category || "",
-					button: { text: "Rent Now", link: `/booking?rentalId=${item._id}` },
-				}));
-				setSlides(
-					mapped.length
-						? mapped
-						: [getFallbackSlide("No products found", "Please check back later.")]
-				);
-			} catch (e) {
-				console.error('Error fetching slides:', e);
-				setError(e.message || 'Failed to fetch products');
-				setSlides([
-					getFallbackSlide(
-						"Connection Error", 
-						"Could not connect to the server. Please try again later."
-					),
-				]);
-			} finally {
-				setLoading(false);
-			}
-		}
-		fetchSlides();
-	}, []);
+  const getFallbackSlide = (title, subtitle) => ({
+    image: "/ref1.png",
+    title,
+    subtitle,
+    button: { text: "Explore", link: "/category" },
+  });
 
-	// Helper function for fallback slides
-	const getFallbackSlide = (title, subtitle) => ({
-		image: "/ref1.png",
-		title: title,
-		subtitle: subtitle,
-		button: { text: "Explore", link: "/category" },
-	});
+  useEffect(() => {
+    if (slides.length === 0) return;
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % slides.length);
+    }, 3500);
+    return () => clearInterval(interval);
+  }, [slides]);
 
-	useEffect(() => {
-		if (slides.length === 0) return;
-		const interval = setInterval(() => {
-			setCurrent((prev) => (prev + 1) % slides.length);
-		}, 3000);
-		return () => clearInterval(interval);
-	}, [slides]);
+  const goTo = (idx) => setCurrent(idx);
+  const prev = () => setCurrent((current - 1 + slides.length) % slides.length);
+  const next = () => setCurrent((current + 1) % slides.length);
 
-	const goTo = (idx) => setCurrent(idx);
-	const prev = () => setCurrent((current - 1 + slides.length) % slides.length);
-	const next = () => setCurrent((current + 1) % slides.length);
+  return (
+    <section className="relative bg-[#0A0F2C] text-white min-h-screen py-12 overflow-hidden flex items-center">
+      <div className="absolute top-[-100px] left-[-100px] w-[400px] h-[400px] bg-[#FFD700] opacity-10 blur-3xl rounded-full pointer-events-none z-0" />
 
-	return (
-		<section
-			className="hero relative min-h-[520px] flex items-center justify-center"
-			style={{
-				background:
-					"linear-gradient(135deg, rgba(27,60,52,0.92) 0%, rgba(29,53,87,0.92) 100%)",
-				padding: "0",
-			}}
-		>
-			<div className="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-between min-h-[520px]">
-				{/* Left: Text */}
-				<div className="lg:w-1/2 w-full flex flex-col justify-center items-start py-16 lg:py-0">
-					<h1
-						className="font-serif font-bold mb-4"
-						style={{
-							fontFamily: "Playfair Display, serif",
-							fontSize: "3.5rem",
-							lineHeight: 1.1,
-							color: "#1B3C34",
-							textShadow: "0 2px 8px rgba(255,255,255,0.12)",
-						}}
-					>
-						Rent Anything. Anytime. Anywhere.
-					</h1>
-					<p
-						className="mb-8 text-lg md:text-xl text-white drop-shadow-lg"
-						style={{
-							fontWeight: 400,
-							textShadow: "0 2px 8px rgba(27,60,52,0.18)",
-							maxWidth: 520,
-						}}
-					>
-						Welcome to RentX – India&apos;s most trusted rental platform for everyday
-						needs. Powered by AI, find personalized rentals from electronics to
-						vehicles, fashion to party supplies.
-					</p>
-					<div className="flex gap-6">
-						<a
-							href="/category#categories-section"
-							className="px-8 py-3 rounded-lg font-serif text-lg font-medium bg-white text-[#1B3C34] shadow hover:bg-[#D4A017] hover:text-[#1A1A1A] transition border border-[#1B3C34]"
-							style={{ minWidth: 160 }}
-						>
-							Start Renting
-						</a>
-						<a
-							href="/add-product"
-							className="px-8 py-3 rounded-lg font-serif text-lg font-medium bg-white text-[#1B3C34] shadow hover:bg-[#D4A017] hover:text-[#1A1A1A] transition border border-[#1B3C34]"
-							style={{ minWidth: 160 }}
-						>
-							List Your Item
-						</a>
-					</div>
-					
-					{error && (
-						<div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg">
-							<p><strong>Error:</strong> {error}</p>
-							<p className="text-sm mt-1">Make sure the backend server is running at <a href="https://rentx-backend.onrender.com" target="_blank" rel="noopener noreferrer">https://rentx-backend.onrender.com</a></p>
-						</div>
-					)}
-				</div>
-				{/* Right: Slider */}
-				<div className="lg:w-1/2 w-full flex justify-center items-center">
-					<div className="relative w-[420px] h-[420px] rounded-2xl overflow-hidden shadow-2xl bg-white/10 flex items-center">
-						{loading ? (
-							<div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-75">
-								<div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#1B3C34]"></div>
-							</div>
-						) : (
-							<>
-								{slides.map((slide, idx) => (
-									<div
-										key={idx}
-										className={`absolute top-0 left-0 w-full h-full transition-opacity duration-700 ${
-											idx === current ? "opacity-100 z-10" : "opacity-0 z-0"
-										}`}
-										style={{ transitionProperty: "opacity" }}
-									>
-										<Image
-											src={slide.image}
-											alt={slide.title}
-											fill
-											style={{ objectFit: "cover" }}
-											className="rounded-2xl"
-											priority={idx === 0}
-										/>
-										<div className="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-black/70 to-transparent flex flex-col items-start justify-end rounded-b-2xl">
-											<h3
-												className="text-2xl font-serif font-bold text-white mb-2"
-												style={{ textShadow: "0 2px 8px #000" }}
-											>
-												{slide.title}
-											</h3>
-											<p
-												className="text-base text-white mb-4"
-												style={{ textShadow: "0 2px 8px #000" }}
-											>
-												{slide.subtitle}
-											</p>
-											<a
-												href={slide.button.link}
-												className="px-6 py-2 rounded bg-[#D4A017] text-[#1A1A1A] font-serif font-semibold text-lg shadow hover:bg-[#fff] hover:text-[#1B3C34] transition"
-											>
-												{slide.button.text}
-											</a>
-										</div>
-									</div>
-								))}
-								{/* Navigation Arrows */}
-								<button
-									onClick={prev}
-									className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#1B3C34] rounded-full w-10 h-10 flex items-center justify-center shadow-lg z-20"
-									aria-label="Previous slide"
-									style={{ fontSize: 28 }}
-								>
-									&#8249;
-								</button>
-								<button
-									onClick={next}
-									className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#1B3C34] rounded-full w-10 h-10 flex items-center justify-center shadow-lg z-20"
-									aria-label="Next slide"
-									style={{ fontSize: 28 }}
-								>
-									&#8250;
-								</button>
-								{/* Dots */}
-								<div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-									{slides.map((_, idx) => (
-										<button
-											key={idx}
-											onClick={() => goTo(idx)}
-											className={`w-3 h-3 rounded-full ${
-												idx === current ? "bg-[#D4A017]" : "bg-white/60"
-											} border border-[#1B3C34]`}
-											aria-label={`Go to slide ${idx + 1}`}
-										/>
-									))}
-								</div>
-							</>
-						)}
-					</div>
-				</div>
-			</div>
-		</section>
-	);
+      <div className="w-full px-4 lg:px-8 xl:px-12 2xl:px-20 max-w-screen-2xl mx-auto flex flex-col lg:flex-row items-start lg:items-center justify-between gap-10 relative z-10">
+        {/* Left Text Content */}
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          animate={loaded ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 1 }}
+          className="text-left w-full lg:w-[50%] xl:w-[55%]"
+        >
+          <span className="inline-block bg-[#F5E6C8] text-[#0A0F2C] px-3 py-1 text-xs rounded-full mb-3 font-medium">
+            Trusted by 10K+ renters
+          </span>
+          <h1 className="text-4xl md:text-5xl font-bold text-[#F5E6C8] mb-6 font-serif leading-snug">
+            Rent Anything.<br /> Anytime.<br /> Anywhere.
+          </h1>
+          <p className="text-[#E1E1E1] mb-8 text-lg max-w-2xl">
+            India’s smartest rental platform for gadgets, fashion, vehicles and more.
+          </p>
+          <div className="flex flex-wrap gap-4">
+            <a
+              href="/category"
+              className="bg-[#F5E6C8] text-[#0A0F2C] px-6 py-3 rounded-full font-semibold shadow hover:bg-white transition flex items-center gap-2"
+            >
+              📦 Start Renting
+            </a>
+            <a
+              href="/add-product"
+              className="border border-[#F5E6C8] text-[#F5E6C8] px-6 py-3 rounded-full hover:bg-[#F5E6C8] hover:text-[#0A0F2C] transition flex items-center gap-2"
+            >
+              ➕ List Your Item
+            </a>
+          </div>
+          {error && (
+            <div className="mt-4 p-3 bg-red-200/20 text-red-300 rounded-lg border border-red-300">
+              <p><strong>Error:</strong> {error}</p>
+              <p className="text-sm mt-1">Make sure backend is running at http://localhost:5000</p>
+            </div>
+          )}
+        </motion.div>
+
+        {/* Right Image Slider */}
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          animate={loaded ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 1.2 }}
+          className="w-full lg:w-[50%] xl:w-[45%] flex justify-end"
+        >
+          <div className="relative w-full max-w-[420px] h-[480px] rounded-xl overflow-hidden border border-[#F5E6C8] bg-[#1D2541] shadow-lg">
+            {loading ? (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-100/60">
+                <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#FFD700]"></div>
+              </div>
+            ) : (
+              slides.map((slide, idx) => (
+                <div
+                  key={idx}
+                  className={`absolute top-0 left-0 w-full h-full transition-opacity duration-700 ${idx === current ? "opacity-100 z-10" : "opacity-0 z-0"}`}
+                >
+                  <Image
+                    src={slide.image}
+                    alt={slide.title}
+                    fill
+                    className="object-cover transition-transform duration-500 hover:scale-105"
+                    priority={idx === 0}
+                  />
+                  <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end rounded-b-2xl">
+                    <h3 className="text-xl font-bold text-white">{slide.title}</h3>
+                    <p className="text-sm text-white mb-2">{slide.subtitle}</p>
+                    <a
+                      href={slide.button.link}
+                      className="inline-block px-4 py-2 mt-2 bg-[#FFD700] text-[#1A1A1A] rounded hover:bg-white transition"
+                    >
+                      {slide.button.text}
+                    </a>
+                  </div>
+                </div>
+              ))
+            )}
+            <button onClick={prev} className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#1B3C34] rounded-full w-9 h-9 flex items-center justify-center z-20">&#8249;</button>
+            <button onClick={next} className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#1B3C34] rounded-full w-9 h-9 flex items-center justify-center z-20">&#8250;</button>
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+              {slides.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => goTo(idx)}
+                  className={`w-3 h-3 rounded-full ${idx === current ? "bg-[#FFD700]" : "bg-white/40"} border border-white`}
+                />
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* 👇 Divider at the bottom to separate Hero and next section */}
+      <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#F5E6C8]/30 to-transparent" />
+    </section>
+  );
 }

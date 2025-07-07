@@ -21,8 +21,7 @@ const userSchema = new mongoose.Schema({
   phone: {
     type: String,
     required: true,
-    unique: true,
-    lowercase: true,
+    lowercase: true, // removed unique: true so phone can be reused
   },
   googleId: {
     type: String,

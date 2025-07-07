@@ -53,13 +53,10 @@ const upload = multer({ storage: storage });
 router.get('/', async (req, res) => {
   try {
     const rentals = await Rental.find().populate('user', 'name email');
-    if (!Array.isArray(rentals)) {
-      return res.json([]);
-    }
     res.json(rentals);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Server error', data: [] });
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

@@ -1,85 +1,111 @@
+"use client";
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { api } from "@/utils/api";
+import { motion } from "framer-motion";
+import SectionDivider from "@/components/ui/SectionDivider";
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 50 },
+  visible: (i) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.2,
+      duration: 0.6,
+      ease: "easeOut",
+    },
+  }),
+};
 
 export default function FeaturedItems() {
-  return (
-    <section className="py-16 bg-[#F8F1E9]">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold font-playfair mb-2">Featured Items</h2>
-          <p className="text-gray-500">Check out these popular items available for rent near you</p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* MacBook Pro */}
-          <div className="bg-white rounded-lg shadow hover:-translate-y-1 transition p-4 flex flex-col h-full">
-            <div className="relative">
-              <Image src="https://images.unsplash.com/photo-1593642632823-8f785ba67e45?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="MacBook Pro" width={400} height={200} className="rounded mb-3 object-cover h-52 w-full" />
-              <span className="absolute top-3 right-3 bg-[#D4A017] text-[#1A1A1A] text-xs px-3 py-1 rounded-full">Popular</span>
-            </div>
-            <h5 className="font-bold text-lg mb-1">MacBook Pro 2023</h5>
-            <p className="text-gray-500 text-sm mb-2"><i className="fas fa-map-marker-alt mr-1"></i> Bangalore, Karnataka</p>
-            <h5 className="text-[#1B3C34] mb-3">₹999 <span className="text-gray-400 text-sm">/ day</span></h5>
-            <div className="flex flex-wrap mb-2 gap-2">
-              <span className="bg-[#D4A017] text-[#1A1A1A] text-xs px-3 py-1 rounded-full">Authenticity: 94%</span>
-              <span className="bg-[#1B3C34] text-white text-xs px-3 py-1 rounded-full">Safety: High</span>
-            </div>
-            <div className="flex justify-between border-t pt-3 text-xs text-gray-400">
-              <span><i className="fas fa-calendar-alt mr-1"></i>Min. 3 days</span>
-              <span><i className="fas fa-star mr-1"></i>4.9 (24)</span>
-            </div>
-            <div className="flex justify-center">
-              <span className="mt-4 bg-emerald-100 text-emerald-800 px-6 py-2 rounded-full text-lg font-bold text-center">
-                Coming Soon
-              </span>
-            </div>
-          </div>
-          {/* Canon EOS R5 */}
-          <div className="bg-white rounded-lg shadow hover:-translate-y-1 transition p-4 flex flex-col h-full">
-            <div className="relative">
-              <Image src="https://images.unsplash.com/photo-1494972308805-463bc619d34e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Canon EOS R5" width={400} height={200} className="rounded mb-3 object-cover h-52 w-full" />
-              <span className="absolute top-3 right-3 bg-[#D4A017] text-[#1A1A1A] text-xs px-3 py-1 rounded-full">New</span>
-            </div>
-            <h5 className="font-bold text-lg mb-1">Canon EOS R5</h5>
-            <p className="text-gray-500 text-sm mb-2"><i className="fas fa-map-marker-alt mr-1"></i> Mumbai, Maharashtra</p>
-            <h5 className="text-[#1B3C34] mb-3">₹1,499 <span className="text-gray-400 text-sm">/ day</span></h5>
-            <div className="flex flex-wrap mb-2 gap-2">
-              <span className="bg-[#D4A017] text-[#1A1A1A] text-xs px-3 py-1 rounded-full">Authenticity: 96%</span>
-              <span className="bg-[#1B3C34] text-white text-xs px-3 py-1 rounded-full">Safety: Medium</span>
-            </div>
-            <div className="flex justify-between border-t pt-3 text-xs text-gray-400">
-              <span><i className="fas fa-calendar-alt mr-1"></i>Min. 2 days</span>
-              <span><i className="fas fa-star mr-1"></i>4.8 (16)</span>
-            </div>
-            <div className="flex justify-center">
-              <span className="mt-4 bg-emerald-100 text-emerald-800 px-6 py-2 rounded-full text-lg font-bold text-center">
-                Coming Soon
-              </span>
-            </div>
-          </div>
-          {/* Hyundai Creta 2022 */}
-          <div className="bg-white rounded-lg shadow hover:-translate-y-1 transition p-4 flex flex-col h-full">
-            <div className="relative">
-              <Image src="https://images.unsplash.com/photo-1502877338535-766e1452684a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Hyundai Creta" width={400} height={200} className="rounded mb-3 object-cover h-52 w-full" />
-              <span className="absolute top-3 right-3 bg-[#D4A017] text-[#1A1A1A] text-xs px-3 py-1 rounded-full">Popular</span>
-            </div>
-            <h5 className="font-bold text-lg mb-1">Hyundai Creta 2022</h5>
-            <p className="text-gray-500 text-sm mb-2"><i className="fas fa-map-marker-alt mr-1"></i> Delhi</p>
-            <h5 className="text-[#1B3C34] mb-3">₹2,499 <span className="text-gray-400 text-sm">/ day</span></h5>
-            <div className="flex flex-wrap mb-2 gap-2">
-              <span className="bg-[#D4A017] text-[#1A1A1A] text-xs px-3 py-1 rounded-full">Authenticity: 93%</span>
-              <span className="bg-[#1B3C34] text-white text-xs px-3 py-1 rounded-full">Safety: High</span>
-            </div>
-            <div className="flex justify-between border-t pt-3 text-xs text-gray-400">
-              <span><i className="fas fa-calendar-alt mr-1"></i>Min. 7 days</span>
-              <span><i className="fas fa-star mr-1"></i>4.7 (32)</span>
-            </div>
-            <div className="flex justify-center">
-              <span className="mt-4 bg-emerald-100 text-emerald-800 px-6 py-2 rounded-full text-lg font-bold text-center">
-                Coming Soon
-              </span>
-            </div>
-          </div>
-        </div>
+  const [featured, setFeatured] = useState([]);
+
+  useEffect(() => {
+    async function fetchFeatured() {
+      try {
+        const data = await api.get("/rentals");
+        const selected = data?.slice(0, 4) || [];
+        const mapped = selected.map((item) => ({
+          id: item._id,
+          title: item.name || item.title || "Product",
+          price: item.price || "N/A",
+          category: item.category || "Misc",
+          image:
+            item.image && !item.image.startsWith("http")
+              ? `http://localhost:5000${item.image}`
+              : item.image || item.img || "/ref1.png",
+        }));
+        setFeatured(mapped);
+      } catch (error) {
+        console.error("Error fetching featured:", error);
+      }
+    }
+
+    fetchFeatured();
+  }, []);
+  
+return (
+  <section className="min-h-screen bg-gradient-to-b from-[#0A0F2C] via-black to-[#0A0F2C] text-white flex flex-col justify-between">
+    {/* 🔝 Top: Divider stays at top */}
+    <div className="max-w-7xl mx-auto px-4 w-full pt-8">
+      <SectionDivider />
+    </div>
+
+    {/* ⬇️ Bottom: Heading and product cards aligned to bottom */}
+    <div className="max-w-7xl mx-auto px-4 w-full pb-16">
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: false, amount: 0.3 }}
+        variants={fadeUp}
+        custom={0}
+        className="text-center mb-14"
+      >
+        <h2 className="text-4xl md:text-5xl font-bold font-serif text-[#F5E6C8] mb-3">
+          Featured Items
+        </h2>
+        <p className="text-gray-400 text-lg">
+          Our top-picked rentals just for you, updated weekly.
+        </p>
+      </motion.div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {featured.map((item, i) => (
+          <motion.div
+            key={i}
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.3 }}
+            custom={i}
+          >
+            <Link href={`/booking?rentalId=${item.id}`} className="no-underline">
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 hover:-translate-y-1 transition-all duration-300 shadow-lg flex flex-col h-full">
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  width={400}
+                  height={160}
+                  className="rounded-lg mb-3 object-cover h-40 w-full"
+                />
+                <h5 className="text-xl font-semibold text-[#F5E6C8] mb-1">
+                  {item.title}
+                </h5>
+                <p className="text-gray-300 text-sm mb-1">
+                  {item.category}
+                </p>
+                <div className="flex justify-between text-sm text-gray-400 mt-auto">
+                  <span>💰 ₹{item.price}/day</span>
+                  <span>⭐ 4.{7 + i % 3}/5</span>
+                </div>
+              </div>
+            </Link>
+          </motion.div>
+        ))}
       </div>
-    </section>
-  );
+    </div>
+  </section>
+);
 }

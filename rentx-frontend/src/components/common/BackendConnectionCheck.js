@@ -12,7 +12,7 @@ export default function BackendConnectionCheck() {
       try {
         setIsChecking(true);
         // Simple health check to the root API endpoint
-        await fetch(process.env.NEXT_PUBLIC_API_URL?.replace('/api', ''), { 
+        await fetch('http://localhost:5000', { 
           method: 'GET',
           signal: AbortSignal.timeout(5000) // 5 second timeout
         });
@@ -44,7 +44,7 @@ export default function BackendConnectionCheck() {
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
-          <span className="font-medium">Backend connection error: The server at {process.env.NEXT_PUBLIC_API_URL?.replace('/api', '')} is not reachable.</span>
+          <span className="font-medium">Backend connection error: The server at http://localhost:5000 is not reachable.</span>
         </div>
         <a 
           href="#" 
@@ -56,4 +56,4 @@ export default function BackendConnectionCheck() {
       </div>
     </div>
   );
-}
+} 

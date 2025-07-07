@@ -123,7 +123,7 @@ export default function CategoryTemplate({
               <div key={item._id || idx} className="bg-white rounded-lg shadow-md hover:shadow-lg transition p-4 flex flex-col h-full">
                 <div className="relative">
                   <Image
-                    src={item.image && !item.image.startsWith('http') ? `${process.env.NEXT_PUBLIC_IMAGE_URL}${item.image}` : (item.image || item.img || '/ref1.png')}
+                    src={item.image && !item.image.startsWith('http') ? `http://localhost:5000${item.image}` : (item.image || item.img || '/ref1.png')}
                     alt={item.name || item.title}
                     width={400}
                     height={200}
@@ -181,7 +181,7 @@ export default function CategoryTemplate({
                 <div className="flex flex-col md:flex-row gap-4">
                   <div className="md:w-1/4 relative">
                     <Image
-                      src={item.image && !item.image.startsWith('http') ? `${process.env.NEXT_PUBLIC_IMAGE_URL}${item.image}` : (item.image || item.img || '/ref1.png')}
+                      src={item.image && !item.image.startsWith('http') ? `http://localhost:5000${item.image}` : (item.image || item.img || '/ref1.png')}
                       alt={item.name || item.title}
                       width={300}
                       height={200}
@@ -253,7 +253,7 @@ export default function CategoryTemplate({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 12h.01M19 21H5a2 2 0 01-2-2V7a2 2 0 012-2h14a2 2 0 012 2v12a2 2 0 01-2 2z" />
               </svg>
               <h3 className="text-gray-700 font-medium text-lg mb-2">No items found</h3>
-              <p className="text-gray-500 mb-4">We couldn&apos;t find any {title.toLowerCase()} items available for rent.</p>
+              <p className="text-gray-500 mb-4">We couldn't find any {title.toLowerCase()} items available for rent.</p>
               <Link href="/add-product" className="bg-emerald-800 hover:bg-emerald-900 text-white px-6 py-2 rounded-md font-medium">
                 Add a Product
               </Link>
@@ -263,4 +263,4 @@ export default function CategoryTemplate({
       </div>
     </section>
   );
-}
+} 

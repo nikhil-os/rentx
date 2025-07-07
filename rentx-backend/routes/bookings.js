@@ -42,8 +42,8 @@ router.get('/', auth, async (req, res) => {
     const bookings = await Booking.find({ user: req.userId }).populate('rental');
     res.json(bookings);
   } catch (err) {
-    console.error('Booking  error:', err);
-    res.status(500).json({ message: 'Server error while ing bookings' });
+    console.error('Booking fetch error:', err);
+    res.status(500).json({ message: 'Server error while fetching bookings' });
   }
 });
 
@@ -67,7 +67,7 @@ router.get('/all', auth, async (req, res) => {
     const bookings = await Booking.find().populate('user', 'name email').populate('rental');
     res.status(200).json(bookings);
   } catch (error) {
-    console.error('Error ing all bookings:', error);
+    console.error('Error fetching all bookings:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -88,8 +88,8 @@ router.get('/:id', auth, async (req, res) => {
     
     res.json(booking);
   } catch (err) {
-    console.error("Booking  Error:", err);
-    res.status(500).json({ message: 'Server error while ing booking' });
+    console.error("Booking Fetch Error:", err);
+    res.status(500).json({ message: 'Server error while fetching booking' });
   }
 });
 

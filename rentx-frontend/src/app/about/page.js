@@ -2,7 +2,7 @@
 // About page route for /about
 
 import AboutSection from "@/components/about/AboutSection";
-// import ChatbotWidget from "@components/homepage/ChatbotWidget";
+import ChatbotWidget from "@components/homepage/ChatbotWidget";
 
 export default function AboutPage() {
   return (
@@ -10,7 +10,7 @@ export default function AboutPage() {
       <div className="flex flex-col flex-1">
         <AboutSection />
       </div>
-      {/* <ChatbotWidget /> */}
+      <ChatbotWidget />
     </main>
   );
 }

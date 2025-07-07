@@ -16,10 +16,8 @@ export default function ElectronicsList() {
       setLoading(true);
       setError("");
       try {
-        const data = await api.get("/api/rentals");
-        // Ensure data is always an array
-        const rentalsArray = Array.isArray(data) ? data : [];
-        setElectronicsItems(rentalsArray.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "electronics"));
+        const data = await api.get("/rentals");
+        setElectronicsItems(data.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "electronics"));
       } catch (err) {
         setError(typeof err === "string" ? err : (err.message || "Failed to load electronics items."));
       }
