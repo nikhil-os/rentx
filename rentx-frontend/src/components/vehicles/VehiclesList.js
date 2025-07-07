@@ -16,7 +16,7 @@ export default function VehiclesList() {
       setLoading(true);
       setError("");
       try {
-        const data = await api.get("/rentals");
+        const data = await api.get("/api/rentals");
         console.log("All rentals:", data);
 
         // Ensure data is always an array

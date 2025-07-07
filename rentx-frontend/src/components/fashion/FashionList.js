@@ -16,7 +16,7 @@ export default function FashionList() {
       setLoading(true);
       setError("");
       try {
-        const data = await api.get("/rentals");
+        const data = await api.get("/api/rentals");
         // Ensure data is always an array
         const rentalsArray = Array.isArray(data) ? data : [];
         setFashionItems(rentalsArray.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "fashion"));
