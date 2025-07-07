@@ -7,7 +7,7 @@ import PopularCategories from "../components/homepage/PopularCategories";
 import FeaturedItems from "../components/homepage/FeaturedItems";
 import HowItWorks from "../components/homepage/HowItWorks";
 import CallToAction from "../components/homepage/CallToAction";
-import ChatbotWidget from "../components/homepage/ChatbotWidget";
+// import ChatbotWidget from "../components/homepage/ChatbotWidget";
 
 export default function Home() {
   // Chatbot state

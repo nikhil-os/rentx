@@ -2,7 +2,7 @@
 // About page route for /about
 
 import AboutSection from "@/components/about/AboutSection";
-import ChatbotWidget from "@components/homepage/ChatbotWidget";
+// import ChatbotWidget from "@components/homepage/ChatbotWidget";
 
 export default function AboutPage() {
   return (
