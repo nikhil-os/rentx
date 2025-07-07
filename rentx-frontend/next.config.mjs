@@ -16,7 +16,8 @@ const nextConfig = {
       'media.istockphoto.com',
       'static.toiimg.com',
       'via.placeholder.com',
-      'rentx-tau.vercel.app'
+      'rentx-tau.vercel.app',
+      'res.cloudinary.com'
     ],
   },
 };
