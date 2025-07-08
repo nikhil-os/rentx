@@ -1,4 +1,3 @@
-// AccessoriesList.js
 "use client";
 
 import { useEffect, useState } from "react";
@@ -16,30 +15,30 @@ export default function AccessoriesList() {
       setError("");
 
       try {
-        const response = await api.get("/rentals");
-console.log("✅ Full API raw:", response);
-console.log("✅ response.data:", response?.data);
+        const data = await api.get("/rentals"); // ✅ Directly get array
+        console.log("✅ Full API raw:", data);
 
-        const data = Array.isArray(response?.data)
-          ? response.data
-          : Array.isArray(response)
-          ? response
-          : [];
+        // Defensive check
+        if (!Array.isArray(data)) {
+          throw new Error("Expected an array from /rentals API.");
+        }
 
         const filtered = data.filter((item) => {
-          const category = (item.category || item.Category || "").toLowerCase().trim();
-          return category === "accessories";
+          const raw = item.category || item.Category || "";
+          console.log("📦 Item category:", raw);
+          return raw.toLowerCase().trim() === "accessories";
         });
 
         console.log("🎯 Filtered accessories:", filtered);
         setAccessoriesItems(filtered);
+
       } catch (err) {
-        const message =
+        console.error("❌ Error fetching accessories:", err);
+        setError(
           typeof err === "string"
             ? err
-            : err?.response?.data?.message || err.message || "Failed to load accessories items.";
-        setError(message);
-        console.error("❌ Error loading accessories:", message);
+            : err?.response?.data?.message || err.message || "Failed to load accessories items."
+        );
       } finally {
         setLoading(false);
       }
