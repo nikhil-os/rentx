@@ -17,7 +17,8 @@ export default function AccessoriesList() {
 
       try {
         const response = await api.get("/rentals");
-        console.log("✅ Full API response:", response);
+console.log("✅ Full API raw:", response);
+console.log("✅ response.data:", response?.data);
 
         const data = Array.isArray(response?.data)
           ? response.data
