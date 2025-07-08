@@ -15,17 +15,18 @@ export default function AccessoriesList() {
       setError("");
 
       try {
-        const data = await api.get("/rentals"); // ✅ Directly get array
-        console.log("✅ Full API raw:", data);
+        const response = await api.get("/rentals");
+        const data = response.data; // ✅ This is your actual array
 
-        // Defensive check
+        console.log("✅ Full API raw:", response);
+        console.log("✅ Extracted data:", data);
+
         if (!Array.isArray(data)) {
           throw new Error("Expected an array from /rentals API.");
         }
 
         const filtered = data.filter((item) => {
           const raw = item.category || item.Category || "";
-          console.log("📦 Item category:", raw);
           return raw.toLowerCase().trim() === "accessories";
         });
 
