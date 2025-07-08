@@ -15,33 +15,28 @@ export default function AccessoriesList() {
       setError("");
 
       try {
-  const response = await api.get("/rentals");
-  console.log("✅ Raw response from /rentals:", response);
+        const data = await api.get("/rentals"); // ✅ Already parsed JSON array
+        console.log("✅ Raw response from /rentals:", data);
 
-  const data = Array.isArray(response) ? response : response?.data;
-  console.log("✅ Extracted data:", data);
+        if (!Array.isArray(data)) {
+          throw new Error("Expected an array from /rentals API.");
+        }
 
-  if (!Array.isArray(data)) {
-    throw new Error("Expected an array from /rentals API.");
-  }
+        const filtered = data.filter((item) => {
+          const category = item.category || item.Category || "";
+          return category.toLowerCase().trim() === "accessories";
+        });
 
-  const filtered = data.filter((item) => {
-    const raw = item.category || item.Category || "";
-    return raw.toLowerCase().trim() === "accessories";
-  });
-
-  console.log("🎯 Filtered accessories:", filtered);
-  setAccessoriesItems(filtered);
-
-} catch (err) {
-  console.error("❌ Error fetching accessories:", err);
-  setError(
-    typeof err === "string"
-      ? err
-      : err?.response?.data?.message || err.message || "Failed to load accessories items."
-  );
-}
- finally {
+        console.log("🎯 Filtered accessories:", filtered);
+        setAccessoriesItems(filtered);
+      } catch (err) {
+        console.error("❌ Error fetching accessories:", err);
+        setError(
+          typeof err === "string"
+            ? err
+            : err?.message || "Failed to load accessories items."
+        );
+      } finally {
         setLoading(false);
       }
     }
