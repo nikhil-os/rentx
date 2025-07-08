@@ -39,6 +39,9 @@ export default function AccessoriesList() {
     }
 
     fetchAccessories();
+    console.log("Full API response:", res);
+console.log("res.data:", res.data);
+
   }, []);
 
   return (
