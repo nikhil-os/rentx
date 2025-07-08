@@ -5,9 +5,8 @@ import { api, uploadFile } from '@/utils/api';
 import { useRouter } from 'next/navigation';
 import { auth, setupRecaptcha } from '@/utils/firebase';
 import { signInWithPhoneNumber } from 'firebase/auth';
-import Image from 'next/image'; // Make sure this is at the top of your file
+import Image from 'next/image';
 
-// Inline Toast Component
 function Toast({ message, onClose }) {
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -30,14 +29,12 @@ export default function AddProductForm() {
     category: '', 
     price: '', 
     location: '', 
-    image: '', 
     phone: '',
     description: '' 
   });
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [imageFile, setImageFile] = useState(null);
   const [otp, setOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
@@ -46,11 +43,12 @@ export default function AddProductForm() {
   const [showToast, setShowToast] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [termsChecked, setTermsChecked] = useState(false);
-  const [imagePreview, setImagePreview] = useState(null);
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationError, setLocationError] = useState('');
 
-  // Available categories
+  const [imageFiles, setImageFiles] = useState([null, null, null]);
+  const [imagePreviews, setImagePreviews] = useState([null, null, null]);
+
   const categories = [
     { value: "accessories", label: "Accessories" },
     { value: "decor", label: "Decor" },
@@ -83,7 +81,6 @@ export default function AddProductForm() {
   const handleSendOtp = async () => {
     const phone = '+91' + form.phone;
     if (!form.phone || form.phone.length !== 10) return;
-
     if (!form.phone.endsWith('9280')) {
       setShowToast(true);
       return;
@@ -117,19 +114,21 @@ export default function AddProductForm() {
   };
 
   const handleChange = (e) => {
-    if (e.target.name === 'image' && e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setImageFile(file);
-      
-      // Create image preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setForm({ ...form, [e.target.name]: e.target.value });
-    }
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleImageChange = (index, file) => {
+    const updatedFiles = [...imageFiles];
+    updatedFiles[index] = file;
+    setImageFiles(updatedFiles);
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const updatedPreviews = [...imagePreviews];
+      updatedPreviews[index] = reader.result;
+      setImagePreviews(updatedPreviews);
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e) => {
@@ -138,12 +137,8 @@ export default function AddProductForm() {
       setError('Please verify your phone number before adding the product.');
       return;
     }
-    if (!showTerms && !termsChecked) {
-      setShowTerms(true);
-      return;
-    }
     if (!termsChecked) {
-      setError('You must accept the terms and conditions to add a product.');
+      setShowTerms(true);
       return;
     }
     if (!form.name || !form.category || !form.price || !form.location || !form.phone) {
@@ -153,25 +148,35 @@ export default function AddProductForm() {
 
     setError('');
     setLoading(true);
-    let imageUrl = form.image;
+
+    let imageUrls = [];
     try {
-      if (imageFile) {
-        const uploadRes = await uploadFile('/upload', imageFile, 'file');
-        imageUrl = uploadRes.url;
+      for (const file of imageFiles) {
+        if (!file) {
+          setError('Please upload all 3 images.');
+          setLoading(false);
+          return;
+        }
+        const uploadRes = await uploadFile('/upload', file, 'file');
+        imageUrls.push(uploadRes.url);
       }
+
       await api.post('/rentals', {
         title: form.name,
         category: form.category.toLowerCase().trim(),
         description: form.description || '',
         price: form.price,
         location: form.location,
-        image: imageUrl,
-        phone: form.phone
+        phone: form.phone,
+        image: imageUrls[0],
+        image2: imageUrls[1],
+        image3: imageUrls[2]
       });
+
       setSuccess(true);
-      setForm({ name: '', category: '', price: '', location: '', image: '', phone: '', description: '' });
-      setImageFile(null);
-      setImagePreview(null);
+      setForm({ name: '', category: '', price: '', location: '', phone: '', description: '' });
+      setImageFiles([null, null, null]);
+      setImagePreviews([null, null, null]);
       setOtpSent(false);
       setOtpVerified(false);
       setOtp('');
@@ -182,112 +187,61 @@ export default function AddProductForm() {
     }
   };
 
-  // Function to get user's location using the browser's geolocation API
   const detectLocation = () => {
     setLocationLoading(true);
     setLocationError('');
-    
-    // Function to get location using IP API as fallback
     const getLocationByIP = async () => {
       try {
         const response = await fetch(`https://ipapi.co/json/`);
         const data = await response.json();
-        
         if (data && data.city) {
           const locationString = `${data.city || ''}, ${data.region || ''}, ${data.country_name || ''}`;
-          setForm(prev => ({ 
-            ...prev, 
-            location: locationString.replace(/^, /, '').replace(/, $/, '') 
-          }));
+          setForm(prev => ({ ...prev, location: locationString.replace(/^, /, '').replace(/, $/, '') }));
         } else {
           throw new Error("Could not get location data");
         }
       } catch (error) {
-        console.error("Error fetching location:", error);
         setLocationError("Could not detect your location. Please enter manually.");
       } finally {
         setLocationLoading(false);
       }
     };
-    
-    // Try browser geolocation first
+
     if (navigator.geolocation) {
-      // Set a timeout in case geolocation permission dialog is ignored
       const timeoutId = setTimeout(() => {
-        console.log("Geolocation timed out, using IP-based location");
         getLocationByIP();
       }, 5000);
-      
+
       navigator.geolocation.getCurrentPosition(
         async (position) => {
-          // Clear the timeout since we got a response
           clearTimeout(timeoutId);
-          
           try {
-            // Use the coordinates from geolocation to create a location string
             const { latitude, longitude } = position.coords;
-            console.log(`Got coordinates: ${latitude}, ${longitude}`);
-            
-            // Try to get a reverse geocoding result
-            try {
-              // Use a free reverse geocoding API
-              const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`);
-              const data = await response.json();
-              
-              if (data && data.address) {
-                const address = data.address;
-                const city = address.city || address.town || address.village || address.hamlet || '';
-                const state = address.state || address.county || '';
-                const country = address.country || '';
-                
-                const locationString = `${city}, ${state}, ${country}`;
-                setForm(prev => ({ 
-                  ...prev, 
-                  location: locationString.replace(/^, /, '').replace(/, $/, '').replace(/, , /g, ', ') 
-                }));
-                setLocationLoading(false);
-                return;
-              }
-            } catch (error) {
-              console.error("Error with reverse geocoding:", error);
-              // Fall back to IP-based geolocation if reverse geocoding fails
+            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`);
+            const data = await response.json();
+            if (data && data.address) {
+              const address = data.address;
+              const city = address.city || address.town || address.village || address.hamlet || '';
+              const state = address.state || address.county || '';
+              const country = address.country || '';
+              const locationString = `${city}, ${state}, ${country}`;
+              setForm(prev => ({ ...prev, location: locationString.replace(/^, /, '').replace(/, $/, '').replace(/, , /g, ', ') }));
+              setLocationLoading(false);
+              return;
             }
-            
-            // If reverse geocoding failed, fall back to IP-based location
             await getLocationByIP();
-          } catch (error) {
+          } catch {
             setLocationError("Could not detect your location. Please enter manually.");
             setLocationLoading(false);
           }
         },
-        (error) => {
-          // Clear the timeout since we got an error response
+        () => {
           clearTimeout(timeoutId);
-          console.error("Geolocation error:", error);
-          
-          // Show specific error based on the error code
-          switch(error.code) {
-            case error.PERMISSION_DENIED:
-              setLocationError("Location access was denied. Using IP-based location instead.");
-              break;
-            case error.POSITION_UNAVAILABLE:
-              setLocationError("Location information unavailable. Using IP-based location instead.");
-              break;
-            case error.TIMEOUT:
-              setLocationError("Location request timed out. Using IP-based location instead.");
-              break;
-            default:
-              setLocationError("An unknown error occurred. Using IP-based location instead.");
-          }
-          
-          // Fall back to IP-based geolocation
-          console.log("Geolocation permission denied, using IP-based location");
           getLocationByIP();
         },
         { timeout: 10000, maximumAge: 60000, enableHighAccuracy: true }
       );
     } else {
-      // Browser doesn't support geolocation, use IP-based fallback
       getLocationByIP();
     }
   };
@@ -300,195 +254,63 @@ export default function AddProductForm() {
         {success && <div className="mb-4 p-3 bg-green-100 text-green-800 rounded">Product added successfully!</div>}
 
         <form onSubmit={handleSubmit} autoComplete="off" className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Left Column */}
+          {/* Left */}
           <div className="space-y-4">
-            <div>
-              <label className="block mb-1 font-medium text-gray-700">Product Name*</label>
-              <input 
-                type="text" 
-                name="name" 
-                className="form-input w-full text-black border border-gray-300 rounded-md px-3 py-2" 
-                value={form.name} 
-                onChange={handleChange} 
-                required 
-                placeholder="Enter product name"
-              />
+            <input required type="text" name="name" placeholder="Product Name*" className="form-input w-full text-black border px-3 py-2" value={form.name} onChange={handleChange} />
+            <select required name="category" className="form-select w-full text-black border px-3 py-2" value={form.category} onChange={handleChange}>
+              <option value="">Select Category*</option>
+              {categories.map(cat => <option key={cat.value} value={cat.value}>{cat.label}</option>)}
+            </select>
+            <input required type="number" name="price" placeholder="Price (₹/day)*" min="1" className="form-input w-full text-black border px-3 py-2" value={form.price} onChange={handleChange} />
+            <div className="flex gap-2">
+              <input required type="text" name="location" placeholder="Location*" className="form-input flex-1 text-black border px-3 py-2" value={form.location} onChange={handleChange} />
+              <button type="button" onClick={detectLocation} disabled={locationLoading} className="btn bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-2 rounded-md">{locationLoading ? '...' : 'Detect'}</button>
             </div>
-
-            <div>
-              <label className="block mb-1 font-medium text-gray-700">Category*</label>
-              <select 
-                name="category" 
-                className="form-select w-full text-black border border-gray-300 rounded-md px-3 py-2"
-                value={form.category} 
-                onChange={handleChange} 
-                required
-              >
-                <option value="">Select a category</option>
-                {categories.map(category => (
-                  <option key={category.value} value={category.value}>
-                    {category.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block mb-1 font-medium text-gray-700">Price (₹/day)*</label>
-              <input 
-                type="number" 
-                name="price" 
-                className="form-input w-full text-black border border-gray-300 rounded-md px-3 py-2" 
-                value={form.price} 
-                onChange={handleChange} 
-                required
-                placeholder="Enter rental price per day" 
-                min="1"
-              />
-            </div>
-
-            <div>
-              <label className="block mb-1 font-medium text-gray-700">Location*</label>
-              <div className="flex gap-2">
-                <input 
-                  type="text" 
-                  name="location" 
-                  className="form-input flex-1 text-black border border-gray-300 rounded-md px-3 py-2" 
-                  value={form.location} 
-                  onChange={handleChange} 
-                  required
-                  placeholder="Enter your location" 
-                />
-                <button 
-                  type="button"
-                  onClick={detectLocation}
-                  className="btn px-3 py-2 rounded-md bg-emerald-700 hover:bg-emerald-800 text-white"
-                  disabled={locationLoading}
-                >
-                  {locationLoading ? '...' : 'Detect'}
-                </button>
-              </div>
-              {locationError && <p className="text-xs text-red-500 mt-1">{locationError}</p>}
-            </div>
-
-            <div>
-              <label className="block mb-1 font-medium text-gray-700">Description</label>
-              <textarea 
-                name="description" 
-                className="form-textarea w-full text-black border border-gray-300 rounded-md px-3 py-2" 
-                value={form.description} 
-                onChange={handleChange}
-                rows="4"
-                placeholder="Describe your product (optional)"
-              ></textarea>
-            </div>
+            {locationError && <p className="text-xs text-red-500">{locationError}</p>}
+            <textarea name="description" className="form-textarea w-full text-black border px-3 py-2" rows="4" placeholder="Description (optional)" value={form.description} onChange={handleChange}></textarea>
           </div>
 
-          {/* Right Column */}
+          {/* Right */}
           <div className="space-y-4">
-            <div>
-              <label className="block mb-1 font-medium text-gray-700">Phone Number*</label>
-              <div className="flex gap-2">
-                <input
-                  type="tel"
-                  name="phone"
-                  value={form.phone}
-                  onChange={(e) => {
-                    const val = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
-                    setForm({ ...form, phone: val });
-                    setOtpSent(false);
-                    setOtpVerified(false);
-                    setOtp('');
-                  }}
-                  required
-                  className="form-input flex-1 text-black border border-gray-300 rounded-md px-3 py-2"
-                  placeholder="10-digit phone number"
-                />
-                <button 
-                  type="button" 
-                  onClick={handleSendOtp} 
-                  disabled={otpSent || form.phone.length !== 10} 
-                  className={`btn px-4 py-2 rounded-md ${otpSent ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'} text-white`}
-                >
-                  Send OTP
-                </button>
-              </div>
+            <div className="flex gap-2">
+              <input type="tel" name="phone" required placeholder="Phone Number*" className="form-input flex-1 text-black border px-3 py-2" value={form.phone} onChange={(e) => {
+                const val = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+                setForm({ ...form, phone: val });
+                setOtpSent(false);
+                setOtpVerified(false);
+                setOtp('');
+              }} />
+              <button type="button" onClick={handleSendOtp} disabled={otpSent || form.phone.length !== 10} className={`btn px-4 py-2 rounded-md ${otpSent ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'} text-white`}>Send OTP</button>
             </div>
-
             {otpSent && !otpVerified && (
               <div>
-                <label className="block mb-1 font-medium text-gray-700">Enter OTP*</label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, '').slice(0, 6))}
-                    maxLength={6}
-                    className="form-input flex-1 text-black border border-gray-300 rounded-md px-3 py-2"
-                    placeholder="6-digit OTP"
-                  />
-                  <button 
-                    type="button" 
-                    onClick={handleVerifyOtp} 
-                    className="btn bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md"
-                  >
-                    Verify
-                  </button>
-                </div>
+                <input type="text" value={otp} onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, '').slice(0, 6))} maxLength={6} className="form-input w-full text-black border px-3 py-2" placeholder="Enter 6-digit OTP" />
+                <button type="button" onClick={handleVerifyOtp} className="btn bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md mt-2">Verify</button>
                 {otpError && <div className="text-sm text-red-600 mt-1">{otpError}</div>}
               </div>
             )}
-
             {otpVerified && <div className="text-green-600 text-sm font-medium">✓ Phone number verified!</div>}
 
             <div>
-              <label className="block mb-1 font-medium text-gray-700">Product Image</label>
-              <input 
-                type="file" 
-                name="image" 
-                onChange={handleChange}
-                className="form-input w-full text-black border border-gray-300 rounded-md px-3 py-2" 
-                accept="image/*"
-              />
-              {imagePreview && (
-                <div className="mt-2">
-                  <Image
-      src={imagePreview}
-      alt="Product preview"
-      layout="fill"
-      objectFit="contain"
-                    className="h-40 w-auto object-contain border rounded-md"
-                  />
+              <label className="block font-medium text-gray-700 mb-1">Upload 3 Images*</label>
+              {[0, 1, 2].map((index) => (
+                <div key={index} className="mb-3">
+                  <input type="file" required accept="image/*" onChange={(e) => handleImageChange(index, e.target.files[0])} className="form-input w-full text-black border px-3 py-2" />
+                  {imagePreviews[index] && (
+                    <div className="mt-2">
+                      <Image src={imagePreviews[index]} alt={`Preview ${index + 1}`} width={200} height={150} className="object-contain border rounded-md" />
+                    </div>
+                  )}
                 </div>
-              )}
+              ))}
             </div>
 
             <div className="flex items-center mt-4">
-              <input
-                type="checkbox"
-                id="terms"
-                checked={termsChecked}
-                onChange={e => setTermsChecked(e.target.checked)}
-                className="mr-2"
-              />
-              <label htmlFor="terms" className="text-gray-700 text-sm">
-                I agree to the <button 
-                  type="button" 
-                  className="text-blue-600 underline" 
-                  onClick={() => setShowTerms(true)}
-                >
-                  terms and conditions
-                </button>
-              </label>
+              <input type="checkbox" id="terms" checked={termsChecked} onChange={e => setTermsChecked(e.target.checked)} className="mr-2" />
+              <label htmlFor="terms" className="text-gray-700 text-sm">I agree to the <button type="button" className="text-blue-600 underline" onClick={() => setShowTerms(true)}>terms and conditions</button></label>
             </div>
 
-            <button 
-              type="submit" 
-              className="btn w-full bg-emerald-800 hover:bg-emerald-900 text-white py-3 rounded-md font-medium mt-4"
-              disabled={loading}
-            >
-              {loading ? 'Adding Product...' : 'Add Product'}
-            </button>
+            <button type="submit" className="btn w-full bg-emerald-800 hover:bg-emerald-900 text-white py-3 rounded-md font-medium mt-4" disabled={loading}>{loading ? 'Adding Product...' : 'Add Product'}</button>
           </div>
         </form>
 
@@ -513,24 +335,8 @@ export default function AddProductForm() {
                 <li>You can remove your listing at any time if not currently rented.</li>
               </ol>
               <div className="flex gap-2">
-                <button
-                  className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded font-medium"
-                  onClick={() => {
-                    setTermsChecked(true);
-                    setShowTerms(false);
-                  }}
-                >
-                  Accept & Continue
-                </button>
-                <button
-                  className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded font-medium"
-                  onClick={() => {
-                    setShowTerms(false);
-                  }}
-                  type="button"
-                >
-                  Cancel
-                </button>
+                <button className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded font-medium" onClick={() => { setTermsChecked(true); setShowTerms(false); }}>Accept & Continue</button>
+                <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded font-medium" onClick={() => setShowTerms(false)} type="button">Cancel</button>
               </div>
             </div>
           </div>

@@ -15,7 +15,7 @@ export default function AccessoriesList() {
       setError("");
 
       try {
-        const data = await api.get("/rentals"); // ✅ Already parsed JSON array
+        const data = await api.get("/rentals");
         console.log("✅ Raw response from /rentals:", data);
 
         if (!Array.isArray(data)) {
@@ -47,7 +47,7 @@ export default function AccessoriesList() {
   return (
     <CategoryTemplate
       title="Accessories"
-      description="Discover stylish accessories to complement your lok"
+      description="Discover stylish accessories to complement your look"
       items={accessoriesItems}
       loading={loading}
       error={error}
