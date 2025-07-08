@@ -54,7 +54,7 @@ export default function Footer() {
             <li><Link href="/about" className="hover:text-[#FFD700] transition">About Us</Link></li>
             <li><Link href="/category" className="hover:text-[#FFD700] transition">Categories</Link></li>
             <li><Link href="/how-it-works" className="hover:text-[#FFD700] transition">How It Works</Link></li>
-            <li><Link href="/blog" className="hover:text-[#FFD700] transition">Blog</Link></li>
+            {/* <li><Link href="/blog" className="hover:text-[#FFD700] transition">Blog</Link></li> */}
           </ul>
         </motion.div>
 
@@ -71,7 +71,7 @@ export default function Footer() {
             <li><Link href="/vehicles" className="hover:text-[#FFD700] transition">Vehicles</Link></li>
             <li><Link href="/furniture" className="hover:text-[#FFD700] transition">Furniture</Link></li>
             <li><Link href="/tools" className="hover:text-[#FFD700] transition">Tools</Link></li>
-            <li><Link href="/party-supplies" className="hover:text-[#FFD700] transition">Party Supplies</Link></li>
+            {/* <li><Link href="/party-supplies" className="hover:text-[#FFD700] transition">Party Supplies</Link></li> */}
           </ul>
         </motion.div>
 
