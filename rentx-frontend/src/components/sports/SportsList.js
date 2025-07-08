@@ -1,5 +1,4 @@
 // SportsList.js
-// Main content for the Sports page
 "use client";
 
 import { useEffect, useState } from "react";
@@ -15,14 +14,28 @@ export default function SportsList() {
     async function fetchSports() {
       setLoading(true);
       setError("");
+
       try {
-        const data = await api.get("/rentals");
-        setSportsItems(data.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "sports"));
+        const res = await api.get("/rentals");
+        const data = Array.isArray(res?.data) ? res.data : res;
+
+        const filtered = (Array.isArray(data) ? data : []).filter(item => {
+          const category = (item.category || item.Category || "").toLowerCase().trim();
+          return category === "sports";
+        });
+
+        setSportsItems(filtered);
       } catch (err) {
-        setError(typeof err === "string" ? err : (err.message || "Failed to load sports items."));
+        setError(
+          typeof err === "string"
+            ? err
+            : err?.response?.data?.message || err.message || "Failed to load sports items."
+        );
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
+
     fetchSports();
   }, []);
 

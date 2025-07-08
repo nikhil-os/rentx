@@ -1,5 +1,4 @@
 // ElectronicsList.js
-// Main content for the Electronics page
 "use client";
 
 import { useEffect, useState } from "react";
@@ -15,14 +14,28 @@ export default function ElectronicsList() {
     async function fetchElectronics() {
       setLoading(true);
       setError("");
+
       try {
-        const data = await api.get("/rentals");
-        setElectronicsItems(data.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "electronics"));
+        const res = await api.get("/rentals");
+        const data = Array.isArray(res?.data) ? res.data : res; // 🛡️ Fallback safety
+
+        const filtered = (Array.isArray(data) ? data : []).filter(item => {
+          const category = (item.category || item.Category || "").toLowerCase().trim();
+          return category === "electronics";
+        });
+
+        setElectronicsItems(filtered);
       } catch (err) {
-        setError(typeof err === "string" ? err : (err.message || "Failed to load electronics items."));
+        setError(
+          typeof err === "string"
+            ? err
+            : err?.response?.data?.message || err.message || "Failed to load electronics items."
+        );
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
+
     fetchElectronics();
   }, []);
 

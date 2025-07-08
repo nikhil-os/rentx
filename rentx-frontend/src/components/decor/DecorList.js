@@ -1,5 +1,4 @@
 // DecorList.js
-// Main content for the Decor page
 "use client";
 
 import { useEffect, useState } from "react";
@@ -16,13 +15,26 @@ export default function DecorList() {
       setLoading(true);
       setError("");
       try {
-        const data = await api.get("/rentals");
-        setDecorItems(data.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "decor"));
+        const res = await api.get("/rentals");
+        const data = Array.isArray(res?.data) ? res.data : res; // 🛡️ Safety check
+
+        const filtered = (Array.isArray(data) ? data : []).filter(item => {
+          const category = (item.category || item.Category || "").toLowerCase().trim();
+          return category === "decor";
+        });
+
+        setDecorItems(filtered);
       } catch (err) {
-        setError(typeof err === "string" ? err : (err.message || "Failed to load decor items."));
+        setError(
+          typeof err === "string"
+            ? err
+            : err?.response?.data?.message || err.message || "Failed to load decor items."
+        );
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
+
     fetchDecor();
   }, []);
 

@@ -1,5 +1,4 @@
 // VehiclesList.js
-// Main content for the Vehicles page
 "use client";
 
 import { useEffect, useState } from "react";
@@ -15,16 +14,28 @@ export default function VehiclesList() {
     async function fetchVehicles() {
       setLoading(true);
       setError("");
-      try {
-        const data = await api.get("/rentals");
-        console.log("All rentals:", data);
 
-        setVehicles(data.filter(item => (item.category || item.Category || "").toLowerCase() === "vehicles"));
+      try {
+        const res = await api.get("/rentals");
+        const data = Array.isArray(res?.data) ? res.data : res;
+
+        const filtered = (Array.isArray(data) ? data : []).filter(item => {
+          const category = (item.category || item.Category || "").toLowerCase().trim();
+          return category === "vehicles";
+        });
+
+        setVehicles(filtered);
       } catch (err) {
-        setError(typeof err === "string" ? err : (err.message || "Failed to load vehicles."));
+        setError(
+          typeof err === "string"
+            ? err
+            : err?.response?.data?.message || err.message || "Failed to load vehicles."
+        );
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
+
     fetchVehicles();
   }, []);
 

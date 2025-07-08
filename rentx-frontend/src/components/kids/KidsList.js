@@ -1,5 +1,4 @@
 // KidsList.js
-// Main content for the Kids page
 "use client";
 
 import { useEffect, useState } from "react";
@@ -15,14 +14,28 @@ export default function KidsList() {
     async function fetchKids() {
       setLoading(true);
       setError("");
+
       try {
-        const data = await api.get("/rentals");
-        setKidsItems(data.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "kids"));
+        const res = await api.get("/rentals");
+        const data = Array.isArray(res?.data) ? res.data : res;
+
+        const filtered = (Array.isArray(data) ? data : []).filter(item => {
+          const category = (item.category || item.Category || "").toLowerCase().trim();
+          return category === "kids";
+        });
+
+        setKidsItems(filtered);
       } catch (err) {
-        setError(typeof err === "string" ? err : (err.message || "Failed to load kids items."));
+        setError(
+          typeof err === "string"
+            ? err
+            : err?.response?.data?.message || err.message || "Failed to load kids items."
+        );
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
+
     fetchKids();
   }, []);
 

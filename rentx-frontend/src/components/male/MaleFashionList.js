@@ -1,5 +1,4 @@
 // MaleFashionList.js
-// Main content for the Male Fashion page
 "use client";
 
 import { useEffect, useState } from "react";
@@ -15,14 +14,28 @@ export default function MaleFashionList() {
     async function fetchMale() {
       setLoading(true);
       setError("");
+
       try {
-        const data = await api.get("/rentals");
-        setMaleItems(data.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "male"));
+        const res = await api.get("/rentals");
+        const data = Array.isArray(res?.data) ? res.data : res;
+
+        const filtered = (Array.isArray(data) ? data : []).filter(item => {
+          const category = (item.category || item.Category || "").toLowerCase().trim();
+          return category === "male";
+        });
+
+        setMaleItems(filtered);
       } catch (err) {
-        setError(typeof err === "string" ? err : (err.message || "Failed to load male fashion items."));
+        setError(
+          typeof err === "string"
+            ? err
+            : err?.response?.data?.message || err.message || "Failed to load male fashion items."
+        );
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
+
     fetchMale();
   }, []);
 

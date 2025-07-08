@@ -1,5 +1,4 @@
 // FashionList.js
-// Main content for the Fashion page
 "use client";
 
 import { useEffect, useState } from "react";
@@ -15,14 +14,28 @@ export default function FashionList() {
     async function fetchFashion() {
       setLoading(true);
       setError("");
+
       try {
-        const data = await api.get("/rentals");
-        setFashionItems(data.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "fashion"));
+        const res = await api.get("/rentals");
+        const data = Array.isArray(res?.data) ? res.data : res;
+
+        const filtered = (Array.isArray(data) ? data : []).filter(item => {
+          const category = (item.category || item.Category || "").toLowerCase().trim();
+          return category === "fashion";
+        });
+
+        setFashionItems(filtered);
       } catch (err) {
-        setError(typeof err === "string" ? err : (err.message || "Failed to load fashion items."));
+        setError(
+          typeof err === "string"
+            ? err
+            : err?.response?.data?.message || err.message || "Failed to load fashion items."
+        );
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
+
     fetchFashion();
   }, []);
 

@@ -1,5 +1,4 @@
 // FemaleFashionList.js
-// Main content for the Female Fashion page
 "use client";
 
 import { useEffect, useState } from "react";
@@ -15,14 +14,28 @@ export default function FemaleFashionList() {
     async function fetchFemale() {
       setLoading(true);
       setError("");
+
       try {
-        const data = await api.get("/rentals");
-        setFemaleItems(data.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "female"));
+        const res = await api.get("/rentals");
+        const data = Array.isArray(res?.data) ? res.data : res;
+
+        const filtered = (Array.isArray(data) ? data : []).filter(item => {
+          const category = (item.category || item.Category || "").toLowerCase().trim();
+          return category === "female";
+        });
+
+        setFemaleItems(filtered);
       } catch (err) {
-        setError(typeof err === "string" ? err : (err.message || "Failed to load female fashion items."));
+        setError(
+          typeof err === "string"
+            ? err
+            : err?.response?.data?.message || err.message || "Failed to load female fashion items."
+        );
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
+
     fetchFemale();
   }, []);
 

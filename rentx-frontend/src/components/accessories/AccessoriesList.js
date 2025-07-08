@@ -1,5 +1,4 @@
 // AccessoriesList.js
-// Main content for the Accessories page
 "use client";
 
 import { useEffect, useState } from "react";
@@ -16,13 +15,26 @@ export default function AccessoriesList() {
       setLoading(true);
       setError("");
       try {
-        const data = await api.get("/rentals");
-        setAccessoriesItems(data.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "accessories"));
+        const res = await api.get("/rentals");
+        const data = Array.isArray(res?.data) ? res.data : res; // 🛡️ Fallback if api wrapper doesn't wrap in `.data`
+
+        const filtered = (Array.isArray(data) ? data : []).filter(item => {
+          const category = (item.category || item.Category || "").toLowerCase().trim();
+          return category === "accessories";
+        });
+
+        setAccessoriesItems(filtered);
       } catch (err) {
-        setError(typeof err === "string" ? err : (err.message || "Failed to load accessories items."));
+        setError(
+          typeof err === "string"
+            ? err
+            : err?.response?.data?.message || err.message || "Failed to load accessories items."
+        );
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
+
     fetchAccessories();
   }, []);
 

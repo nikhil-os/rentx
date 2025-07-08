@@ -1,8 +1,8 @@
 "use client";
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { api } from '@/utils/api';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { api } from "@/utils/api";
+import { motion } from "framer-motion";
 
 const categorySlugs = [
   "vehicles", "kids", "furniture", "fashion",
@@ -27,15 +27,21 @@ export default function HeroSection() {
       try {
         setLoading(true);
         setError(null);
-        const data = await api.get("/rentals");
+
+        const res = await api.get("/rentals");
+        const data = Array.isArray(res?.data) ? res.data : res;
+
         const allProducts = [];
         for (const category of categorySlugs) {
-          const filtered = data.filter(
+          const filtered = (Array.isArray(data) ? data : []).filter(
             (item) =>
-              (item.category || item.Category || "").toLowerCase().trim() === category
+              (item.category || item.Category || "")
+                .toLowerCase()
+                .trim() === category
           );
           allProducts.push(...filtered);
         }
+
         const mapped = allProducts.map((item) => ({
           image:
             item.image && !item.image.startsWith("http")
@@ -43,22 +49,27 @@ export default function HeroSection() {
               : item.image || item.img || "/ref1.png",
           title: item.name || item.title || "Product",
           subtitle: item.price ? `₹${item.price}/day` : item.category || "",
-          button: { text: "Rent Now", link: `/booking?rentalId=${item._id}` },
+          button: {
+            text: "Rent Now",
+            link: `/booking?rentalId=${item._id}`,
+          },
         }));
+
         setSlides(
           mapped.length
             ? mapped
             : [getFallbackSlide("No products found", "Please check back later.")]
         );
       } catch (e) {
-        setError(e.message || 'Failed to fetch products');
+        setError(e.message || "Failed to fetch products");
         setSlides([
-          getFallbackSlide("Connection Error", "Could not connect to the server.")
+          getFallbackSlide("Connection Error", "Could not connect to the server."),
         ]);
       } finally {
         setLoading(false);
       }
     }
+
     fetchSlides();
   }, []);
 
@@ -78,15 +89,17 @@ export default function HeroSection() {
   }, [slides]);
 
   const goTo = (idx) => setCurrent(idx);
-  const prev = () => setCurrent((current - 1 + slides.length) % slides.length);
+  const prev = () =>
+    setCurrent((current - 1 + slides.length) % slides.length);
   const next = () => setCurrent((current + 1) % slides.length);
 
   return (
     <section className="relative bg-[#0A0F2C] text-white min-h-screen py-12 overflow-hidden flex items-center">
+      {/* Yellow blur background shape */}
       <div className="absolute top-[-100px] left-[-100px] w-[400px] h-[400px] bg-[#FFD700] opacity-10 blur-3xl rounded-full pointer-events-none z-0" />
 
       <div className="w-full px-4 lg:px-8 xl:px-12 2xl:px-20 max-w-screen-2xl mx-auto flex flex-col lg:flex-row items-start lg:items-center justify-between gap-10 relative z-10">
-        {/* Left Text Content */}
+        {/* 📝 Text Section */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={loaded ? { opacity: 1, x: 0 } : {}}
@@ -116,6 +129,7 @@ export default function HeroSection() {
               ➕ List Your Item
             </a>
           </div>
+
           {error && (
             <div className="mt-4 p-3 bg-red-200/20 text-red-300 rounded-lg border border-red-300">
               <p><strong>Error:</strong> {error}</p>
@@ -124,7 +138,7 @@ export default function HeroSection() {
           )}
         </motion.div>
 
-        {/* Right Image Slider */}
+        {/* 🎞️ Slider Section */}
         <motion.div
           initial={{ opacity: 0, x: 50 }}
           animate={loaded ? { opacity: 1, x: 0 } : {}}
@@ -140,7 +154,9 @@ export default function HeroSection() {
               slides.map((slide, idx) => (
                 <div
                   key={idx}
-                  className={`absolute top-0 left-0 w-full h-full transition-opacity duration-700 ${idx === current ? "opacity-100 z-10" : "opacity-0 z-0"}`}
+                  className={`absolute top-0 left-0 w-full h-full transition-opacity duration-700 ${
+                    idx === current ? "opacity-100 z-10" : "opacity-0 z-0"
+                  }`}
                 >
                   <Image
                     src={slide.image}
@@ -162,8 +178,10 @@ export default function HeroSection() {
                 </div>
               ))
             )}
+            {/* ⬅️ Navigation Arrows */}
             <button onClick={prev} className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#1B3C34] rounded-full w-9 h-9 flex items-center justify-center z-20">&#8249;</button>
             <button onClick={next} className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#1B3C34] rounded-full w-9 h-9 flex items-center justify-center z-20">&#8250;</button>
+            {/* ⭕ Slide Dots */}
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
               {slides.map((_, idx) => (
                 <button
@@ -177,7 +195,7 @@ export default function HeroSection() {
         </motion.div>
       </div>
 
-      {/* 👇 Divider at the bottom to separate Hero and next section */}
+      {/* Divider */}
       <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#F5E6C8]/30 to-transparent" />
     </section>
   );

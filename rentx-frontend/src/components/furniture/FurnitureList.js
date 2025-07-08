@@ -1,6 +1,4 @@
 // FurnitureList.js
-// Main content for the Furniture page
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -16,14 +14,28 @@ export default function FurnitureList() {
     async function fetchFurniture() {
       setLoading(true);
       setError("");
+
       try {
-        const data = await api.get("/rentals");
-        setFurnitureItems(data.filter(item => (item.category || item.Category || "").toLowerCase().trim() === "furniture"));
+        const res = await api.get("/rentals");
+        const data = Array.isArray(res?.data) ? res.data : res;
+
+        const filtered = (Array.isArray(data) ? data : []).filter(item => {
+          const category = (item.category || item.Category || "").toLowerCase().trim();
+          return category === "furniture";
+        });
+
+        setFurnitureItems(filtered);
       } catch (err) {
-        setError(typeof err === "string" ? err : (err.message || "Failed to load furniture items."));
+        setError(
+          typeof err === "string"
+            ? err
+            : err?.response?.data?.message || err.message || "Failed to load furniture items."
+        );
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
+
     fetchFurniture();
   }, []);
 
