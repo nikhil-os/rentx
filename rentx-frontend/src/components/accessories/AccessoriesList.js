@@ -1,4 +1,3 @@
-// AccessoriesList.js
 "use client";
 
 import { useEffect, useState } from "react";
@@ -14,9 +13,12 @@ export default function AccessoriesList() {
     async function fetchAccessories() {
       setLoading(true);
       setError("");
+
       try {
         const res = await api.get("/rentals");
-        const data = Array.isArray(res?.data) ? res.data : res; // 🛡️ Fallback if api wrapper doesn't wrap in `.data`
+        const data = await res.json(); // ✅ Parse the response body
+
+        console.log("Fetched data from /rentals:", data);
 
         const filtered = (Array.isArray(data) ? data : []).filter(item => {
           const category = (item.category || item.Category || "").toLowerCase().trim();
@@ -24,7 +26,6 @@ export default function AccessoriesList() {
         });
 
         setAccessoriesItems(filtered);
-        console.log("Fetched data from /rentals:", data);
 
       } catch (err) {
         setError(
