@@ -47,7 +47,7 @@ export default function AccessoriesList() {
   return (
     <CategoryTemplate
       title="Accessories"
-      description="Discover stylish accessories to complement your look"
+      description="Discover stylish accessories to complement your lok"
       items={accessoriesItems}
       loading={loading}
       error={error}
