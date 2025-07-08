@@ -12,7 +12,7 @@ export default function BackendConnectionCheck() {
       try {
         setIsChecking(true);
         // Simple health check to the root API endpoint
-        await fetch('http://localhost:5000', { 
+        await fetch('https://rentx-backend.onrender.com', { 
           method: 'GET',
           signal: AbortSignal.timeout(5000) // 5 second timeout
         });
