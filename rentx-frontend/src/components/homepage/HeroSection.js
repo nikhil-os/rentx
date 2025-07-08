@@ -39,7 +39,7 @@ export default function HeroSection() {
         const mapped = allProducts.map((item) => ({
           image:
             item.image && !item.image.startsWith("http")
-              ? `http://localhost:5000${item.image}`
+              ? `https://rentx-backend.onrender.com/${item.image}`
               : item.image || item.img || "/ref1.png",
           title: item.name || item.title || "Product",
           subtitle: item.price ? `₹${item.price}/day` : item.category || "",
@@ -119,7 +119,7 @@ export default function HeroSection() {
           {error && (
             <div className="mt-4 p-3 bg-red-200/20 text-red-300 rounded-lg border border-red-300">
               <p><strong>Error:</strong> {error}</p>
-              <p className="text-sm mt-1">Make sure backend is running at http://localhost:5000</p>
+              <p className="text-sm mt-1">Make sure backend is running at https://rentx-backend.onrender.com/</p>
             </div>
           )}
         </motion.div>

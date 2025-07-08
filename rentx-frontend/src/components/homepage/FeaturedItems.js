@@ -38,7 +38,7 @@ export default function FeaturedItems() {
           category: item.category || "Misc",
           image:
             item.image && !item.image.startsWith("http")
-              ? `http://localhost:5000${item.image}`
+              ? `https://rentx-backend.onrender.com/${item.image}`
               : item.image || item.img || "/ref1.png",
         }));
 

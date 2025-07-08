@@ -82,7 +82,7 @@ export default function BookingDetailsPage() {
           <div className="flex-shrink-0 w-40 h-40 rounded-2xl overflow-hidden bg-gray-100 border border-emerald-200 flex items-center justify-center mx-auto md:mx-0">
             {booking.rental?.image && (
 <Image
-  src={booking.rental.image.startsWith('http') ? booking.rental.image : `http://localhost:5000${booking.rental.image}`}
+  src={booking.rental.image.startsWith('http') ? booking.rental.image : `https://rentx-backend.onrender.com/${booking.rental.image}`}
   alt={booking.rental?.title}
   className="object-cover w-full h-full"
   width={500}

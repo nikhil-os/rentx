@@ -157,7 +157,7 @@ export default function BookingForm({ rentalId }) {
       return;
     }
     try {
-      await fetch('http://localhost:5000/api/bookings', {
+      await fetch('https://rentx-backend.onrender.com//api/bookings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
