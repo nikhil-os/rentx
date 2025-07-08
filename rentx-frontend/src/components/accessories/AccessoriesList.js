@@ -24,6 +24,8 @@ export default function AccessoriesList() {
         });
 
         setAccessoriesItems(filtered);
+        console.log("Fetched data from /rentals:", data);
+
       } catch (err) {
         setError(
           typeof err === "string"
