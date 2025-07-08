@@ -15,8 +15,7 @@ export default function AccessoriesList() {
       setError("");
 
       try {
-        const res = await api.get("/rentals");
-        const data = await res.json(); // ✅ Parse the response body
+        const data = await api.get("/rentals"); // ✅ NO .json()
 
         console.log("Fetched data from /rentals:", data);
 
@@ -26,6 +25,7 @@ export default function AccessoriesList() {
         });
 
         setAccessoriesItems(filtered);
+        console.log("Filtered accessories:", filtered);
 
       } catch (err) {
         setError(
