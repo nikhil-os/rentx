@@ -15,11 +15,9 @@ export default function AccessoriesList() {
       setError("");
 
       try {
-        const response = await api.get("/rentals");
-        const data = response.data; // ✅ This is your actual array
+        const data = await api.get("/rentals"); // ✅ Don't access `.data` again
 
-        console.log("✅ Full API raw:", response);
-        console.log("✅ Extracted data:", data);
+        console.log("✅ Raw API data:", data);
 
         if (!Array.isArray(data)) {
           throw new Error("Expected an array from /rentals API.");
