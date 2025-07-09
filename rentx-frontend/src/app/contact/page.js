@@ -1,5 +1,4 @@
-// page.js
-// Contact page route for /contact
+// app/contact/page.js
 
 import ContactHero from "@/components/contact/ContactHero";
 import ContactForm from "@/components/contact/ContactForm";
@@ -7,18 +6,17 @@ import ContactInfo from "@/components/contact/ContactInfo";
 
 export default function ContactPage() {
   return (
-    <main className="bg-[#F8F1E9] min-h-screen flex flex-col justify-between">
-      <div>
-        <ContactHero />
-        <section className="py-12">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <ContactForm />
-              <ContactInfo />
-            </div>
+    <main className="bg-gradient-to-b from-[#0A0F2C] via-black to-[#0A0F2C] text-white min-h-screen flex flex-col">
+      <ContactHero />
+      
+      <section className="py-20 relative z-10">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <ContactForm />
+            <ContactInfo />
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </main>
   );
 }
