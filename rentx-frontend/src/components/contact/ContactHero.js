@@ -12,7 +12,7 @@ export default function ContactHero() {
           Contact Us
         </h1>
         <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto">
-          We're here to help! Reach out with any questions, concerns, or feedback.
+          We are here to help! Reach out with any questions, concerns, or feedback.
         </p>
       </div>
     </section>
