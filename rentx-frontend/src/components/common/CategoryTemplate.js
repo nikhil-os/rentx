@@ -199,7 +199,7 @@ export default function CategoryTemplate({
           <div className="text-center py-16">
             <div className="bg-white/5 border border-white/10 rounded-lg p-8 inline-block mx-auto text-white">
               <h3 className="text-xl font-medium mb-2">No items found</h3>
-              <p className="mb-4 text-sm text-gray-300">We couldn't find any {title.toLowerCase()} items available for rent.</p>
+              <p className="mb-4 text-sm text-gray-300">We could not find any {title.toLowerCase()} items available for rent.</p>
               <Link
                 href="/add-product"
                 className="bg-yellow-400 hover:bg-yellow-300 text-black px-6 py-2 rounded font-medium"
