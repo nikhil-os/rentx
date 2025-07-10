@@ -21,7 +21,7 @@ export default function BookingsList() {
       setError('');
       try {
         // Use the correct backend route for user bookings
-        const res = await api.get('/api/bookings');
+        const res = await api.get('/bookings');
         setBookings(Array.isArray(res.data) ? res.data : []);
 
       } catch (err) {
@@ -157,7 +157,7 @@ export default function BookingsList() {
                       });
                       
                       // Refetch bookings after update
-                      const res = await api.get('/api/bookings');
+                      const res = await api.get('/bookings');
                       setBookings(Array.isArray(res.data) ? res.data : []);
 
                       setExtendDays({ ...extendDays, [b._id]: '' });
