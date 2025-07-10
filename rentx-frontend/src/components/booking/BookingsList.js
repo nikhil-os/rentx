@@ -21,7 +21,7 @@ export default function BookingsList() {
       setError('');
       try {
         // Use the correct backend route for user bookings
-        const data = await api.get('/bookings');
+        const data = await api.get('/api/bookings');
         setBookings(data);
       } catch (err) {
         setError(typeof err === 'string' ? err : (err.message || 'Failed to load bookings.'));
