@@ -22,7 +22,7 @@ export default function BookingsList() {
       try {
         // Use the correct backend route for user bookings
         const res = await api.get('/bookings');
-        setBookings(Array.isArray(res.data) ? res.data : []);
+        setBookings(Array.isArray(res) ? res : []);
 
       } catch (err) {
         setError(typeof err === 'string' ? err : (err.message || 'Failed to load bookings.'));
@@ -34,9 +34,13 @@ export default function BookingsList() {
 
   if (loading) return <div className="text-center py-10">Loading bookings...</div>;
   if (error) return <div className="text-center py-10 text-red-600">{error}</div>;
-  if (!bookings.length) return <div className="text-center py-10">No bookings found.</div>;
+  if (!loading && Array.isArray(bookings) && bookings.length === 0) {
+  return <div className="text-center py-10">No bookings found.</div>;
+}
 
   return (
+    <>
+    
     <section className="py-10 min-h-screen">
       <h2 className="text-3xl font-extrabold mb-10 text-center text-emerald-900 tracking-wide drop-shadow-lg">My Bookings</h2>
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -158,7 +162,7 @@ export default function BookingsList() {
                       
                       // Refetch bookings after update
                       const res = await api.get('/bookings');
-                      setBookings(Array.isArray(res.data) ? res.data : []);
+                      setBookings(Array.isArray(res) ? res : []);
 
                       setExtendDays({ ...extendDays, [b._id]: '' });
                       setShowCost({ ...showCost, [b._id]: false });
@@ -178,5 +182,6 @@ export default function BookingsList() {
         })}
       </div>
     </section>
+    </>
   );
 }
